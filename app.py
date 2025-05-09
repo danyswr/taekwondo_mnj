@@ -220,9 +220,15 @@ def add_match():
         title = request.form['title']
         blue_corner_id = request.form['blue_corner_id']
         red_corner_id = request.form['red_corner_id']
-        gender = request.form['gender']
+        gender = request.form.get('gender', '')
         
         cur = mysql.connection.cursor()
+        
+        # If gender is not provided, get it from the blue corner athlete
+        if not gender:
+            cur.execute("SELECT gender FROM athletes WHERE id = %s", (blue_corner_id,))
+            result = cur.fetchone()
+            gender = result['gender'] if result else 'male'
         
         # Check if both athletes are of the same gender
         cur.execute("""
@@ -235,7 +241,7 @@ def add_match():
         
         if result['blue_gender'] != result['red_gender']:
             flash('Both athletes must be of the same gender!', 'danger')
-            return redirect(url_for('create_match_form'))
+            return redirect(url_for('matches'))
         
         # Insert match
         cur.execute("""
@@ -249,7 +255,7 @@ def add_match():
         cur.close()
         
         flash('Match created successfully!', 'success')
-        return redirect(url_for('match_detail', id=match_id))
+        return redirect(url_for('matches'))
 
 @app.route('/matches/<int:id>')
 def match_detail(id):
@@ -258,10 +264,22 @@ def match_detail(id):
     cur.execute("""
         SELECT m.*, 
                blue.full_name as blue_name, 
-               red.full_name as red_name
+               red.full_name as red_name,
+               blue_belt.name as blue_belt,
+               red_belt.name as red_belt,
+               blue_dojang.name as blue_dojang,
+               red_dojang.name as red_dojang,
+               blue.weight as blue_weight,
+               red.weight as red_weight,
+               blue.height as blue_height,
+               red.height as red_height
         FROM matches m
         LEFT JOIN athletes blue ON m.blue_corner_id = blue.id
         LEFT JOIN athletes red ON m.red_corner_id = red.id
+        LEFT JOIN belt_ranks blue_belt ON blue.belt_rank_id = blue_belt.id
+        LEFT JOIN belt_ranks red_belt ON red.belt_rank_id = red_belt.id
+        LEFT JOIN dojangs blue_dojang ON blue.dojang_id = blue_dojang.id
+        LEFT JOIN dojangs red_dojang ON red.dojang_id = red_dojang.id
         WHERE m.id = %s
     """, (id,))
     
@@ -316,6 +334,24 @@ def filter_athletes():
     
     if gender:
         query += f" AND gender = '{gender}'"
+    
+    cur.execute(query)
+    athletes = cur.fetchall()
+    cur.close()
+    
+    return jsonify(athletes)
+
+# New API endpoint to get all athletes with details
+@app.route('/api/athletes/all', methods=['GET'])
+def get_all_athletes():
+    cur = mysql.connection.cursor()
+    
+    query = """
+        SELECT a.*, d.name as dojang_name, b.name as belt_rank
+        FROM athletes a
+        LEFT JOIN dojangs d ON a.dojang_id = d.id
+        LEFT JOIN belt_ranks b ON a.belt_rank_id = b.id
+    """
     
     cur.execute(query)
     athletes = cur.fetchall()

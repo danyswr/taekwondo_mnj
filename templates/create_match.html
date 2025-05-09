@@ -2,73 +2,192 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-10 text-center mb-5">
-        <h1 class="page-title">Create New Match</h1>
-    </div>
-</div>
-
-<div class="row justify-content-center">
     <div class="col-md-10">
-        <div class="card">
-            <div class="card-body">
-                <form action="{{ url_for('add_match') }}" method="POST">
-                    <div class="mb-4">
-                        <label for="title" class="form-label">Match Title</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="match-gender-filter" class="form-label">Filter Athletes by Gender</label>
-                        <select class="form-select" id="match-gender-filter" name="gender">
-                            <option value="">All</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="corner-box blue-corner">
-                                <h3>Blue Corner</h3>
+        <h1 class="page-title text-center" style="text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);">Create Match</h1>
+        
+        <div class="create-match-container">
+            <form action="{{ url_for('add_match') }}" method="POST">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="blue_corner_id" class="form-label">Select Athlete</label>
-                                <select class="form-select" id="blue_corner_id" name="blue_corner_id" required>
-                                    <option value="">Select Athlete</option>
-                                    {% for athlete in athletes %}
-                                    <option value="{{ athlete.id }}">{{ athlete.full_name }} ({{ athlete.gender|capitalize }})</option>
-                                    {% endfor %}
+                            <div class="col-md-6">
+                                <label for="match-gender-filter" class="form-label">Filter</label>
+                                <select class="form-select" id="match-gender-filter" name="gender">
+                                    <option value="">All</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
                             </div>
                         </div>
                         
-                        <div class="col-md-2 d-flex align-items-center justify-content-center">
-                            <div class="vs-text">VS</div>
+                        <div class="match-setup">
+                            <div class="corner-section">
+                                <div class="corner-box blue-corner">
+                                    <h3>Blue Corner</h3>
+                                </div>
+                                <div class="mb-3">
+                                    <select class="form-select" id="blue_corner_id" name="blue_corner_id" required>
+                                        <option value="">Select Athlete</option>
+                                        {% for athlete in athletes %}
+                                        {% if athlete.gender == 'male' %}
+                                        <option value="{{ athlete.id }}">{{ athlete.full_name }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="vs-section">
+                                <div class="vs-text">VS</div>
+                            </div>
+                            
+                            <div class="corner-section">
+                                <div class="corner-box red-corner">
+                                    <h3>Red Corner</h3>
+                                </div>
+                                <div class="mb-3">
+                                    <select class="form-select" id="red_corner_id" name="red_corner_id" required>
+                                        <option value="">Select Athlete</option>
+                                        {% for athlete in athletes %}
+                                        {% if athlete.gender == 'male' %}
+                                        <option value="{{ athlete.id }}">{{ athlete.full_name }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="col-md-5">
-                            <div class="corner-box red-corner">
-                                <h3>Red Corner</h3>
-                            </div>
-                            <div class="mb-3">
-                                <label for="red_corner_id" class="form-label">Select Athlete</label>
-                                <select class="form-select" id="red_corner_id" name="red_corner_id" required>
-                                    <option value="">Select Athlete</option>
-                                    {% for athlete in athletes %}
-                                    <option value="{{ athlete.id }}">{{ athlete.full_name }} ({{ athlete.gender|capitalize }})</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                        <div class="match-actions mt-4">
+                            <button type="submit" class="btn btn-primary">Create Match</button>
+                            <a href="{{ url_for('matches') }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ url_for('matches') }}" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Create Match</button>
+                </div>
+            </form>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="athlete-list-section">
+                        <h4 class="mb-3 text-center">Data Atlet Male</h4>
+                        {% for athlete in athletes %}
+                        {% if athlete.gender == 'male' %}
+                        <div class="athlete-card-male" onclick="selectAthlete('{{ athlete.id }}', 'male')">
+                            {{ athlete.full_name }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
                     </div>
-                </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="athlete-list-section">
+                        <h4 class="mb-3 text-center">Data Atlet Female</h4>
+                        {% for athlete in athletes %}
+                        {% if athlete.gender == 'female' %}
+                        <div class="athlete-card-female" onclick="selectAthlete('{{ athlete.id }}', 'female')">
+                            {{ athlete.full_name }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function selectAthlete(id, gender) {
+        // Get the currently selected corner (blue or red)
+        const blueCorner = document.getElementById('blue_corner_id');
+        const redCorner = document.getElementById('red_corner_id');
+        
+        // If blue corner is empty, fill it first
+        if (!blueCorner.value) {
+            blueCorner.value = id;
+        } else if (!redCorner.value) {
+            // If red corner is empty, fill it next
+            redCorner.value = id;
+        } else {
+            // If both are filled, replace the blue corner
+            blueCorner.value = id;
+        }
+        
+        // Update the gender filter to match the selected athlete
+        const genderFilter = document.getElementById('match-gender-filter');
+        genderFilter.value = gender;
+        
+        // Trigger the change event to update the dropdowns
+        const event = new Event('change');
+        genderFilter.dispatchEvent(event);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter athletes when gender filter changes
+        const matchGenderFilter = document.getElementById('match-gender-filter');
+        if (matchGenderFilter) {
+            matchGenderFilter.addEventListener('change', function() {
+                const gender = this.value;
+                
+                // Show/hide athlete cards based on gender
+                const maleCards = document.querySelectorAll('.athlete-card-male');
+                const femaleCards = document.querySelectorAll('.athlete-card-female');
+                
+                if (gender === 'male') {
+                    maleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
+                    femaleCards.forEach(card => card.parentElement.parentElement.style.display = 'none');
+                } else if (gender === 'female') {
+                    maleCards.forEach(card => card.parentElement.parentElement.style.display = 'none');
+                    femaleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
+                } else {
+                    maleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
+                    femaleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
+                }
+                
+                // Update athlete options in dropdowns
+                fetch(`/api/athletes/filter?gender=${gender}`)
+                    .then(response => response.json())
+                    .then(athletes => {
+                        updateAthleteOptions('blue_corner_id', athletes);
+                        updateAthleteOptions('red_corner_id', athletes);
+                    })
+                    .catch(error => console.error('Error fetching athletes:', error));
+            });
+        }
+        
+        // Function to update athlete dropdown options
+        function updateAthleteOptions(selectId, athletes) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            // Save current selection
+            const currentValue = select.value;
+            
+            // Clear existing options
+            select.innerHTML = '<option value="">Select Athlete</option>';
+            
+            // Add new options
+            athletes.forEach(athlete => {
+                const option = document.createElement('option');
+                option.value = athlete.id;
+                option.textContent = athlete.full_name;
+                select.appendChild(option);
+            });
+            
+            // Restore selection if it exists in new options
+            if (currentValue) {
+                const exists = Array.from(select.options).some(option => option.value === currentValue);
+                if (exists) {
+                    select.value = currentValue;
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

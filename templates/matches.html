@@ -2,17 +2,13 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-10 text-center mb-5">
-        <h1 class="page-title">Matches Management</h1>
-    </div>
-</div>
-
-<div class="row justify-content-center">
     <div class="col-md-10">
+        <h1 class="page-title text-center">MATCHES MANAGEMENT</h1>
+        
         <div class="d-flex justify-content-end mb-4">
-            <a href="{{ url_for('create_match_form') }}" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMatchModal">
                 <i class="fas fa-plus me-2"></i>Create Match
-            </a>
+            </button>
         </div>
         
         <!-- Filters -->
@@ -128,4 +124,454 @@
         </div>
     </div>
 </div>
+
+<!-- Create Match Modal -->
+<div class="modal fade create-match-modal" id="createMatchModal" tabindex="-1" aria-labelledby="createMatchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMatchModalLabel">Create Match</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="create-match-layout">
+                    <!-- Left side - Match setup -->
+                    <div class="match-setup-container">
+                        <form id="createMatchForm" action="{{ url_for('add_match') }}" method="POST">
+                            <div class="mb-3">
+                                <label for="match-title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="match-title" name="title" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div id="blue-corner-card" class="corner-card blue-corner-card" onclick="selectCorner('blue')">
+                                        Blue Corner
+                                    </div>
+                                    <input type="hidden" id="blue_corner_id" name="blue_corner_id">
+                                    <div id="blue-corner-info" class="athlete-corner-info" style="display: none;">
+                                        <div id="blue-corner-name" class="fw-bold mb-2"></div>
+                                        <div id="blue-corner-details"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-2 d-flex align-items-center justify-content-center">
+                                    <div class="vs-label">VS</div>
+                                </div>
+                                
+                                <div class="col-md-5">
+                                    <div id="red-corner-card" class="corner-card red-corner-card" onclick="selectCorner('red')">
+                                        Red Corner
+                                    </div>
+                                    <input type="hidden" id="red_corner_id" name="red_corner_id">
+                                    <div id="red-corner-info" class="athlete-corner-info" style="display: none;">
+                                        <div id="red-corner-name" class="fw-bold mb-2"></div>
+                                        <div id="red-corner-details"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-section">
+                                <div class="filter-title">Filter</div>
+                                
+                                <div class="filter-controls">
+                                    <div class="mb-3">
+                                        <label for="filter-gender" class="form-label">Gender</label>
+                                        <select class="form-select" id="filter-gender" name="gender">
+                                            <option value="">All</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="filter-search" class="form-label">Search</label>
+                                        <input type="text" class="form-control" id="filter-search" placeholder="Search by name or dojang">
+                                    </div>
+                                </div>
+                                
+                                <div class="range-filter">
+                                    <label class="form-label">Age Range</label>
+                                    <div class="range-slider-container">
+                                        <div id="age-range-slider"></div>
+                                        <div class="range-slider-values">
+                                            <span id="age-range-min">0</span>
+                                            <span id="age-range-max">100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="range-filter">
+                                    <label class="form-label">Weight Range (kg)</label>
+                                    <div class="range-slider-container">
+                                        <div id="weight-range-slider"></div>
+                                        <div class="range-slider-values">
+                                            <span id="weight-range-min">0</span>
+                                            <span id="weight-range-max">150</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="range-filter">
+                                    <label class="form-label">Height Range (cm)</label>
+                                    <div class="range-slider-container">
+                                        <div id="height-range-slider"></div>
+                                        <div class="range-slider-values">
+                                            <span id="height-range-min">0</span>
+                                            <span id="height-range-max">250</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-buttons">
+                                    <button type="button" id="reset-filter-btn" class="filter-btn-red">Reset</button>
+                                    <button type="button" id="apply-filter-btn" class="filter-btn-red">Apply filter</button>
+                                </div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" id="create-match-btn" class="action-btn-red" disabled>Create Match</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Right side - Athlete data -->
+                    <div class="athlete-data-container">
+                        <div class="athlete-data-section">
+                            <h4>Data Atlet Male</h4>
+                            <div id="male-athletes-container" class="athlete-card-list">
+                                <!-- Male athletes will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="athlete-data-section">
+                            <h4>Data Atlet Female</h4>
+                            <div id="female-athletes-container" class="athlete-card-list">
+                                <!-- Female athletes will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let allAthletes = [];
+    let selectedCorner = null;
+    let blueCornerAthlete = null;
+    let redCornerAthlete = null;
+    let ageRangeSlider, weightRangeSlider, heightRangeSlider;
+    
+    // Initialize the create match modal
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch all athletes when the modal is shown
+        const createMatchModal = document.getElementById('createMatchModal');
+        createMatchModal.addEventListener('show.bs.modal', function() {
+            fetchAllAthletes();
+            initializeRangeSliders();
+        });
+        
+        // Reset form when modal is hidden
+        createMatchModal.addEventListener('hidden.bs.modal', function() {
+            resetCreateMatchForm();
+        });
+        
+        // Set up filter buttons
+        document.getElementById('reset-filter-btn').addEventListener('click', resetFilters);
+        document.getElementById('apply-filter-btn').addEventListener('click', applyFilters);
+        document.getElementById('filter-search').addEventListener('input', applyFilters);
+        document.getElementById('filter-gender').addEventListener('change', applyFilters);
+    });
+    
+    // Initialize range sliders
+    function initializeRangeSliders() {
+        if (typeof noUiSlider !== 'undefined') {
+            // Age range slider
+            const ageSlider = document.getElementById('age-range-slider');
+            if (ageSlider && !ageSlider.noUiSlider) {
+                ageRangeSlider = noUiSlider.create(ageSlider, {
+                    start: [10, 50],
+                    connect: true,
+                    step: 1,
+                    range: {
+                        'min': 5,
+                        'max': 70
+                    }
+                });
+                
+                ageRangeSlider.on('update', function(values, handle) {
+                    document.getElementById('age-range-min').textContent = Math.round(values[0]);
+                    document.getElementById('age-range-max').textContent = Math.round(values[1]);
+                });
+            }
+            
+            // Weight range slider
+            const weightSlider = document.getElementById('weight-range-slider');
+            if (weightSlider && !weightSlider.noUiSlider) {
+                weightRangeSlider = noUiSlider.create(weightSlider, {
+                    start: [30, 100],
+                    connect: true,
+                    step: 1,
+                    range: {
+                        'min': 20,
+                        'max': 150
+                    }
+                });
+                
+                weightRangeSlider.on('update', function(values, handle) {
+                    document.getElementById('weight-range-min').textContent = Math.round(values[0]);
+                    document.getElementById('weight-range-max').textContent = Math.round(values[1]);
+                });
+            }
+            
+            // Height range slider
+            const heightSlider = document.getElementById('height-range-slider');
+            if (heightSlider && !heightSlider.noUiSlider) {
+                heightRangeSlider = noUiSlider.create(heightSlider, {
+                    start: [100, 200],
+                    connect: true,
+                    step: 1,
+                    range: {
+                        'min': 80,
+                        'max': 220
+                    }
+                });
+                
+                heightRangeSlider.on('update', function(values, handle) {
+                    document.getElementById('height-range-min').textContent = Math.round(values[0]);
+                    document.getElementById('height-range-max').textContent = Math.round(values[1]);
+                });
+            }
+        }
+    }
+    
+    // Fetch all athletes
+    function fetchAllAthletes() {
+        fetch('/api/athletes/all')
+            .then(response => response.json())
+            .then(athletes => {
+                allAthletes = athletes;
+                renderAthletes(athletes);
+            })
+            .catch(error => console.error('Error fetching athletes:', error));
+    }
+    
+    // Render athletes in their respective containers
+    function renderAthletes(athletes) {
+        const maleContainer = document.getElementById('male-athletes-container');
+        const femaleContainer = document.getElementById('female-athletes-container');
+        
+        maleContainer.innerHTML = '';
+        femaleContainer.innerHTML = '';
+        
+        athletes.forEach(athlete => {
+            const athleteCard = createAthleteCard(athlete);
+            
+            if (athlete.gender === 'male') {
+                maleContainer.appendChild(athleteCard);
+            } else {
+                femaleContainer.appendChild(athleteCard);
+            }
+        });
+    }
+    
+    // Create an athlete card element
+    function createAthleteCard(athlete) {
+        const card = document.createElement('div');
+        card.className = `athlete-data-card ${athlete.gender}`;
+        card.dataset.id = athlete.id;
+        
+        // Calculate age from date of birth
+        const dob = new Date(athlete.date_of_birth);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        
+        card.innerHTML = `
+            <div class="athlete-data-header">${athlete.full_name}</div>
+            <div class="athlete-data-info"><strong>Age:</strong> ${age} years</div>
+            <div class="athlete-data-info"><strong>Belt:</strong> ${athlete.belt_rank}</div>
+            <div class="athlete-data-info"><strong>Weight:</strong> ${athlete.weight} kg</div>
+            <div class="athlete-data-info"><strong>Height:</strong> ${athlete.height} cm</div>
+            <div class="athlete-data-info"><strong>Dojang:</strong> ${athlete.dojang_name}</div>
+        `;
+        
+        card.addEventListener('click', function() {
+            selectAthlete(athlete);
+        });
+        
+        return card;
+    }
+    
+    // Select a corner (blue or red)
+    function selectCorner(corner) {
+        selectedCorner = corner;
+        
+        // Update UI to show which corner is selected
+        const blueCornerCard = document.getElementById('blue-corner-card');
+        const redCornerCard = document.getElementById('red-corner-card');
+        
+        blueCornerCard.classList.remove('corner-card-selected');
+        redCornerCard.classList.remove('corner-card-selected');
+        
+        if (corner === 'blue') {
+            blueCornerCard.classList.add('corner-card-selected');
+        } else {
+            redCornerCard.classList.add('corner-card-selected');
+        }
+    }
+    
+    // Select an athlete for the current corner
+    function selectAthlete(athlete) {
+        if (!selectedCorner) {
+            alert('Please select a corner (Blue or Red) first');
+            return;
+        }
+        
+        // Calculate age from date of birth
+        const dob = new Date(athlete.date_of_birth);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        
+        const athleteDetails = `
+            <div class="athlete-corner-info-item"><strong>Age:</strong> ${age} years</div>
+            <div class="athlete-corner-info-item"><strong>Belt:</strong> ${athlete.belt_rank}</div>
+            <div class="athlete-corner-info-item"><strong>Weight:</strong> ${athlete.weight} kg</div>
+            <div class="athlete-corner-info-item"><strong>Height:</strong> ${athlete.height} cm</div>
+            <div class="athlete-corner-info-item"><strong>Dojang:</strong> ${athlete.dojang_name}</div>
+        `;
+        
+        if (selectedCorner === 'blue') {
+            blueCornerAthlete = athlete;
+            document.getElementById('blue_corner_id').value = athlete.id;
+            document.getElementById('blue-corner-name').textContent = athlete.full_name;
+            document.getElementById('blue-corner-details').innerHTML = athleteDetails;
+            document.getElementById('blue-corner-info').style.display = 'block';
+        } else {
+            redCornerAthlete = athlete;
+            document.getElementById('red_corner_id').value = athlete.id;
+            document.getElementById('red-corner-name').textContent = athlete.full_name;
+            document.getElementById('red-corner-details').innerHTML = athleteDetails;
+            document.getElementById('red-corner-info').style.display = 'block';
+        }
+        
+        // Enable create match button if both corners have athletes
+        document.getElementById('create-match-btn').disabled = !(blueCornerAthlete && redCornerAthlete);
+        
+        // Auto-select gender in the filter if both athletes have the same gender
+        if (blueCornerAthlete && redCornerAthlete && blueCornerAthlete.gender === redCornerAthlete.gender) {
+            document.getElementById('filter-gender').value = blueCornerAthlete.gender;
+        }
+    }
+    
+    // Reset filters
+    function resetFilters() {
+        document.getElementById('filter-gender').value = '';
+        document.getElementById('filter-search').value = '';
+        
+        if (ageRangeSlider) ageRangeSlider.set([5, 70]);
+        if (weightRangeSlider) weightRangeSlider.set([20, 150]);
+        if (heightRangeSlider) heightRangeSlider.set([80, 220]);
+        
+        renderAthletes(allAthletes);
+    }
+    
+    // Apply filters
+    function applyFilters() {
+        const genderFilter = document.getElementById('filter-gender').value;
+        const searchFilter = document.getElementById('filter-search').value.toLowerCase();
+        
+        let ageMin = 5, ageMax = 70;
+        let weightMin = 20, weightMax = 150;
+        let heightMin = 80, heightMax = 220;
+        
+        if (ageRangeSlider) {
+            const ageValues = ageRangeSlider.get();
+            ageMin = Math.round(ageValues[0]);
+            ageMax = Math.round(ageValues[1]);
+        }
+        
+        if (weightRangeSlider) {
+            const weightValues = weightRangeSlider.get();
+            weightMin = Math.round(weightValues[0]);
+            weightMax = Math.round(weightValues[1]);
+        }
+        
+        if (heightRangeSlider) {
+            const heightValues = heightRangeSlider.get();
+            heightMin = Math.round(heightValues[0]);
+            heightMax = Math.round(heightValues[1]);
+        }
+        
+        const filteredAthletes = allAthletes.filter(athlete => {
+            // Gender filter
+            if (genderFilter && athlete.gender !== genderFilter) {
+                return false;
+            }
+            
+            // Search filter
+            if (searchFilter && !athlete.full_name.toLowerCase().includes(searchFilter) && 
+                !athlete.dojang_name.toLowerCase().includes(searchFilter)) {
+                return false;
+            }
+            
+            // Age filter
+            const dob = new Date(athlete.date_of_birth);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            if (age < ageMin || age > ageMax) {
+                return false;
+            }
+            
+            // Weight filter
+            if (athlete.weight < weightMin || athlete.weight > weightMax) {
+                return false;
+            }
+            
+            // Height filter
+            if (athlete.height < heightMin || athlete.height > heightMax) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        renderAthletes(filteredAthletes);
+    }
+    
+    // Reset the create match form
+    function resetCreateMatchForm() {
+        document.getElementById('createMatchForm').reset();
+        document.getElementById('blue_corner_id').value = '';
+        document.getElementById('red_corner_id').value = '';
+        document.getElementById('blue-corner-info').style.display = 'none';
+        document.getElementById('red-corner-info').style.display = 'none';
+        document.getElementById('blue-corner-card').classList.remove('corner-card-selected');
+        document.getElementById('red-corner-card').classList.remove('corner-card-selected');
+        document.getElementById('create-match-btn').disabled = true;
+        
+        selectedCorner = null;
+        blueCornerAthlete = null;
+        redCornerAthlete = null;
+        
+        resetFilters();
+    }
+</script>
 {% endblock %}

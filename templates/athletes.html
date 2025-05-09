@@ -2,15 +2,15 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-10 text-center mb-5">
-        <h1 class="page-title">Athletes Management</h1>
-    </div>
-</div>
-
-<div class="row justify-content-center">
     <div class="col-md-10">
-        <div class="d-flex justify-content-end mb-4">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAthleteModal">
+        <h1 class="page-title text-center" style="text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);">ATHLETES MANAGEMENT</h1>
+        
+        <div class="d-flex justify-content-between mb-4">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMatchModal" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);">
+                <i class="fas fa-plus me-2"></i>Create Match
+            </button>
+            
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAthleteModal" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);">
                 <i class="fas fa-plus me-2"></i>Add Athlete
             </button>
         </div>
@@ -46,32 +46,49 @@
         <div class="timeline-container">
             {% for athlete in athletes %}
             <div class="timeline-item">
-                <div class="athlete-card {{ athlete.gender }}">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h4>{{ athlete.full_name }}</h4>
-                            <div class="row mt-4">
-                                <div class="col-md-6">
-                                    <p><strong>Date of Birth:</strong> {{ athlete.date_of_birth }}</p>
-                                    <p><strong>Gender:</strong> {{ athlete.gender|capitalize }}</p>
-                                    <p><strong>Belt Rank:</strong> {{ athlete.belt_rank }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Weight:</strong> {{ athlete.weight }} kg</p>
-                                    <p><strong>Height:</strong> {{ athlete.height }} cm</p>
-                                    <p><strong>Dojang:</strong> {{ athlete.dojang_name }}</p>
-                                </div>
+                <div class="athlete-item {{ athlete.gender }}">
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h3 class="athlete-name">{{ athlete.full_name }}</h3>
+                            <div class="athlete-actions">
+                                <button class="btn edit-btn" data-bs-toggle="modal" data-bs-target="#editAthleteModal{{ athlete.id }}">
+                                    <i class="fas fa-edit me-2"></i>Edit
+                                </button>
+                                <form action="{{ url_for('delete_athlete', id=athlete.id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn delete-btn delete-confirm">
+                                        <i class="fas fa-trash me-2"></i>Delete
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                        <div class="col-md-4 d-flex flex-column justify-content-center align-items-end">
-                            <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#editAthleteModal{{ athlete.id }}">
-                                <i class="fas fa-edit me-2"></i>Edit
-                            </button>
-                            <form action="{{ url_for('delete_athlete', id=athlete.id) }}" method="POST">
-                                <button type="submit" class="btn btn-outline-danger delete-confirm">
-                                    <i class="fas fa-trash me-2"></i>Delete
-                                </button>
-                            </form>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="athlete-info">
+                                    <div class="athlete-info-item">
+                                        <span class="text-muted">Date of Birth:</span> {{ athlete.date_of_birth }}
+                                    </div>
+                                    <div class="athlete-info-item">
+                                        <span class="text-muted">Gender:</span> {{ athlete.gender|capitalize }}
+                                    </div>
+                                    <div class="athlete-info-item">
+                                        <span class="text-muted">Belt Rank:</span> {{ athlete.belt_rank }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="athlete-info">
+                                    <div class="athlete-info-item">
+                                        <span class="text-muted">Weight:</span> {{ athlete.weight }} kg
+                                    </div>
+                                    <div class="athlete-info-item">
+                                        <span class="text-muted">Height:</span> {{ athlete.height }} cm
+                                    </div>
+                                    <div class="athlete-info-item">
+                                        <span class="text-muted">Dojang:</span> {{ athlete.dojang_name }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -132,7 +149,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="text-end">
+                                <div class="d-flex justify-content-between mt-4">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn btn-primary">Save Changes</button>
                                 </div>
@@ -203,7 +220,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between mt-4">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Add Athlete</button>
                     </div>
@@ -212,4 +229,365 @@
         </div>
     </div>
 </div>
+
+<!-- Create Match Modal -->
+<div class="modal fade create-match-modal" id="createMatchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Match</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createMatchForm" action="{{ url_for('add_match') }}" method="POST">
+                    <div class="create-match-container">
+                        <div class="match-setup-section">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="match-title" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="match-title" name="title" required>
+                                </div>
+                            </div>
+                            
+                            <div class="corner-cards">
+                                <div id="blue-corner-card" class="corner-card blue" onclick="selectCorner('blue')">
+                                    Blue Corner
+                                </div>
+                                
+                                <div class="vs-text-large">VS</div>
+                                
+                                <div id="red-corner-card" class="corner-card red" onclick="selectCorner('red')">
+                                    Red Corner
+                                </div>
+                            </div>
+                            
+                            <!-- Hidden inputs for selected athletes -->
+                            <input type="hidden" id="blue_corner_id" name="blue_corner_id">
+                            <input type="hidden" id="red_corner_id" name="red_corner_id">
+                            
+                            <div class="filter-section">
+                                <h4 class="filter-title">Filter</h4>
+                                
+                                <div class="filter-row">
+                                    <div class="filter-group">
+                                        <label class="form-label">Age Range</label>
+                                        <div class="range-slider">
+                                            <input type="range" id="age-range" min="5" max="50" value="18" class="form-range">
+                                            <div class="range-values">
+                                                <span id="age-min">5</span>
+                                                <span id="age-value">18</span>
+                                                <span id="age-max">50</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="filter-group">
+                                        <label class="form-label">Weight Range (kg)</label>
+                                        <div class="range-slider">
+                                            <input type="range" id="weight-range" min="30" max="120" value="60" class="form-range">
+                                            <div class="range-values">
+                                                <span id="weight-min">30</span>
+                                                <span id="weight-value">60</span>
+                                                <span id="weight-max">120</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-row">
+                                    <div class="filter-group">
+                                        <label class="form-label">Height Range (cm)</label>
+                                        <div class="range-slider">
+                                            <input type="range" id="height-range" min="120" max="220" value="170" class="form-range">
+                                            <div class="range-values">
+                                                <span id="height-min">120</span>
+                                                <span id="height-value">170</span>
+                                                <span id="height-max">220</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="filter-group">
+                                        <label class="form-label">Gender</label>
+                                        <select id="gender-filter" class="form-select">
+                                            <option value="">All</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-row">
+                                    <div class="filter-group">
+                                        <label class="form-label">Search</label>
+                                        <input type="text" id="athlete-search" class="form-control" placeholder="Search by name or dojang...">
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-buttons">
+                                    <button type="button" class="filter-btn reset" onclick="resetFilters()">Reset</button>
+                                    <button type="button" class="filter-btn apply" onclick="applyFilters()">Apply filter</button>
+                                </div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button type="submit" class="action-btn create">Create Match</button>
+                                <button type="button" class="action-btn cancel" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                        
+                        <div class="athletes-section">
+                            <div class="athlete-section-title male">Data atlet Male</div>
+                            <div id="male-athletes-container" class="athletes-container">
+                                {% for athlete in athletes %}
+                                {% if athlete.gender == 'male' %}
+                                <div class="athlete-data-card male" data-id="{{ athlete.id }}" data-gender="{{ athlete.gender }}" data-name="{{ athlete.full_name }}" data-dob="{{ athlete.date_of_birth }}" data-weight="{{ athlete.weight }}" data-height="{{ athlete.height }}" data-belt="{{ athlete.belt_rank }}" data-dojang="{{ athlete.dojang_name }}" onclick="selectAthlete(this)">
+                                    <div class="athlete-data-title">{{ athlete.full_name }}</div>
+                                    <div class="athlete-data-info">
+                                        <span>{{ athlete.date_of_birth }}</span>
+                                        <span>{{ athlete.weight }} kg</span>
+                                        <span>{{ athlete.height }} cm</span>
+                                        <span>{{ athlete.belt_rank }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="athlete-section-title female">Data atlet Female</div>
+                            <div id="female-athletes-container" class="athletes-container">
+                                {% for athlete in athletes %}
+                                {% if athlete.gender == 'female' %}
+                                <div class="athlete-data-card female" data-id="{{ athlete.id }}" data-gender="{{ athlete.gender }}" data-name="{{ athlete.full_name }}" data-dob="{{ athlete.date_of_birth }}" data-weight="{{ athlete.weight }}" data-height="{{ athlete.height }}" data-belt="{{ athlete.belt_rank }}" data-dojang="{{ athlete.dojang_name }}" onclick="selectAthlete(this)">
+                                    <div class="athlete-data-title">{{ athlete.full_name }}</div>
+                                    <div class="athlete-data-info">
+                                        <span>{{ athlete.date_of_birth }}</span>
+                                        <span>{{ athlete.weight }} kg</span>
+                                        <span>{{ athlete.height }} cm</span>
+                                        <span>{{ athlete.belt_rank }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Variables to track selected corner and athletes
+    let selectedCorner = null;
+    let blueCornerAthlete = null;
+    let redCornerAthlete = null;
+    
+    // Function to select a corner (blue or red)
+    function selectCorner(corner) {
+        selectedCorner = corner;
+        
+        // Update UI to show selected corner
+        if (corner === 'blue') {
+            document.getElementById('blue-corner-card').classList.add('selected');
+            document.getElementById('red-corner-card').classList.remove('selected');
+        } else {
+            document.getElementById('blue-corner-card').classList.remove('selected');
+            document.getElementById('red-corner-card').classList.add('selected');
+        }
+    }
+    
+    // Function to select an athlete
+    function selectAthlete(athleteElement) {
+        if (!selectedCorner) {
+            alert('Please select a corner (Blue or Red) first');
+            return;
+        }
+        
+        const athleteId = athleteElement.dataset.id;
+        const athleteName = athleteElement.dataset.name;
+        const athleteDob = athleteElement.dataset.dob;
+        const athleteWeight = athleteElement.dataset.weight;
+        const athleteHeight = athleteElement.dataset.height;
+        const athleteBelt = athleteElement.dataset.belt;
+        const athleteDojang = athleteElement.dataset.dojang;
+        const athleteGender = athleteElement.dataset.gender;
+        
+        // Create athlete data object
+        const athleteData = {
+            id: athleteId,
+            name: athleteName,
+            dob: athleteDob,
+            weight: athleteWeight,
+            height: athleteHeight,
+            belt: athleteBelt,
+            dojang: athleteDojang,
+            gender: athleteGender
+        };
+        
+        // Update the appropriate corner
+        if (selectedCorner === 'blue') {
+            blueCornerAthlete = athleteData;
+            document.getElementById('blue_corner_id').value = athleteId;
+            updateCornerCard('blue', athleteData);
+        } else {
+            redCornerAthlete = athleteData;
+            document.getElementById('red_corner_id').value = athleteId;
+            updateCornerCard('red', athleteData);
+        }
+    }
+    
+    // Function to update corner card with athlete data
+    function updateCornerCard(corner, athleteData) {
+        const cornerCard = document.getElementById(`${corner}-corner-card`);
+        
+        // Calculate age from date of birth
+        const dob = new Date(athleteData.dob);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        
+        // Update corner card with athlete info
+        cornerCard.innerHTML = `
+            <div class="athlete-corner-name">${athleteData.name}</div>
+            <div class="athlete-corner-info">
+                <div class="athlete-corner-info-item">
+                    <span class="athlete-corner-info-label">Age</span>
+                    <span class="athlete-corner-info-value">${age} years</span>
+                </div>
+                <div class="athlete-corner-info-item">
+                    <span class="athlete-corner-info-label">Belt</span>
+                    <span class="athlete-corner-info-value">${athleteData.belt}</span>
+                </div>
+                <div class="athlete-corner-info-item">
+                    <span class="athlete-corner-info-label">Weight</span>
+                    <span class="athlete-corner-info-value">${athleteData.weight} kg</span>
+                </div>
+                <div class="athlete-corner-info-item">
+                    <span class="athlete-corner-info-label">Height</span>
+                    <span class="athlete-corner-info-value">${athleteData.height} cm</span>
+                </div>
+                <div class="athlete-corner-info-item">
+                    <span class="athlete-corner-info-label">Dojang</span>
+                    <span class="athlete-corner-info-value">${athleteData.dojang}</span>
+                </div>
+            </div>
+        `;
+        
+        // Change class from corner-card to athlete-corner-card
+        cornerCard.classList.remove('corner-card');
+        cornerCard.classList.add('athlete-corner-card');
+    }
+    
+    // Function to reset filters
+    function resetFilters() {
+        document.getElementById('age-range').value = 18;
+        document.getElementById('weight-range').value = 60;
+        document.getElementById('height-range').value = 170;
+        document.getElementById('gender-filter').value = '';
+        document.getElementById('athlete-search').value = '';
+        
+        // Update displayed values
+        document.getElementById('age-value').textContent = 18;
+        document.getElementById('weight-value').textContent = 60;
+        document.getElementById('height-value').textContent = 170;
+        
+        // Show all athletes
+        showAllAthletes();
+    }
+    
+    // Function to apply filters
+    function applyFilters() {
+        const ageValue = parseInt(document.getElementById('age-range').value);
+        const weightValue = parseInt(document.getElementById('weight-range').value);
+        const heightValue = parseInt(document.getElementById('height-range').value);
+        const genderValue = document.getElementById('gender-filter').value;
+        const searchValue = document.getElementById('athlete-search').value.toLowerCase();
+        
+        // Get all athlete cards
+        const athleteCards = document.querySelectorAll('.athlete-data-card');
+        
+        // Filter athletes
+        athleteCards.forEach(card => {
+            // Get athlete data
+            const dob = new Date(card.dataset.dob);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            const weight = parseFloat(card.dataset.weight);
+            const height = parseFloat(card.dataset.height);
+            const gender = card.dataset.gender;
+            const name = card.dataset.name.toLowerCase();
+            const dojang = card.dataset.dojang.toLowerCase();
+            
+            // Check if athlete matches filters
+            const ageMatch = Math.abs(age - ageValue) <= 5; // Within 5 years of selected age
+            const weightMatch = Math.abs(weight - weightValue) <= 10; // Within 10kg of selected weight
+            const heightMatch = Math.abs(height - heightValue) <= 15; // Within 15cm of selected height
+            const genderMatch = genderValue === '' || gender === genderValue;
+            const searchMatch = searchValue === '' || name.includes(searchValue) || dojang.includes(searchValue);
+            
+            // Show or hide athlete card
+            if (ageMatch && weightMatch && heightMatch && genderMatch && searchMatch) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Function to show all athletes
+    function showAllAthletes() {
+        const athleteCards = document.querySelectorAll('.athlete-data-card');
+        athleteCards.forEach(card => {
+            card.style.display = 'block';
+        });
+    }
+    
+    // Initialize range sliders
+    document.addEventListener('DOMContentLoaded', function() {
+        // Age range slider
+        const ageRange = document.getElementById('age-range');
+        const ageValue = document.getElementById('age-value');
+        
+        ageRange.addEventListener('input', function() {
+            ageValue.textContent = this.value;
+        });
+        
+        // Weight range slider
+        const weightRange = document.getElementById('weight-range');
+        const weightValue = document.getElementById('weight-value');
+        
+        weightRange.addEventListener('input', function() {
+            weightValue.textContent = this.value;
+        });
+        
+        // Height range slider
+        const heightRange = document.getElementById('height-range');
+        const heightValue = document.getElementById('height-value');
+        
+        heightRange.addEventListener('input', function() {
+            heightValue.textContent = this.value;
+        });
+        
+        // Form validation
+        const createMatchForm = document.getElementById('createMatchForm');
+        createMatchForm.addEventListener('submit', function(event) {
+            if (!blueCornerAthlete || !redCornerAthlete) {
+                event.preventDefault();
+                alert('Please select athletes for both Blue and Red corners');
+            }
+        });
+    });
+</script>
 {% endblock %}

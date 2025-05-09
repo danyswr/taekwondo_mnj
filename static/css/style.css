@@ -1,521 +1,1165 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
 
 :root {
-    --primary-color: #1a1a2e;
-    --secondary-color: #16213e;
-    --accent-color: #0f3460;
-    --glow-color: rgba(255, 255, 255, 0.7);
-    --text-color: rgba(255, 255, 255, 0.9);
-    --text-secondary: rgba(255, 255, 255, 0.6);
-    --blue-corner: #0052cc;
-    --red-corner: #e63946;
-    --card-bg: rgba(30, 30, 46, 0.7);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --card-glow: 0 0 15px rgba(255, 255, 255, 0.1);
-    --button-glow: 0 0 10px rgba(255, 255, 255, 0.3);
+  --primary-color: #1a1616; /* Exact dark brown/black from the image */
+  --secondary-color: #211d1d;
+  --accent-color: #f8f8f2;
+  --glow-color: rgba(255, 255, 255, 0.7);
+  --text-color: rgba(255, 255, 255, 0.9);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --blue-corner: #0052cc;
+  --red-corner: #e63946;
+  --blue-athlete: #4cc9f0;
+  --pink-athlete: #f72585;
+  --card-bg: rgba(40, 38, 38, 0.7); /* Exact card background from the image */
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-glow: 0 0 15px rgba(255, 255, 255, 0.1);
+  --title-glow: 0 0 20px rgba(255, 255, 255, 0.5);
+  --button-glow: 0 0 15px rgba(255, 255, 255, 0.3);
+  --timeline-marker-glow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    font-family: 'Montserrat', sans-serif;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font-family: "Montserrat", sans-serif;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 #particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 
 .container {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .navbar {
-    background-color: rgba(26, 26, 46, 0.8);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid var(--card-border);
+  background-color: rgba(26, 22, 22, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .navbar-brand {
-    font-weight: 700;
-    color: var(--text-color);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--text-color);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
 }
 
 .nav-link {
-    color: var(--text-secondary);
-    transition: all 0.3s ease;
-    position: relative;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .nav-link:hover {
-    color: var(--text-color);
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  color: var(--text-color);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
 .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 50%;
-    background-color: var(--text-color);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--text-color);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
 
 .nav-link:hover::after {
-    width: 80%;
+  width: 80%;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    letter-spacing: 1px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  letter-spacing: 1px;
 }
 
 .page-title {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: var(--title-glow);
+  color: #f8f8f2; /* Exact title color from the image */
 }
 
 .card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    box-shadow: var(--card-glow);
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 15px; /* Exact card radius from the image */
+  box-shadow: var(--card-glow);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .card-header {
-    background-color: rgba(15, 52, 96, 0.5);
-    border-bottom: 1px solid var(--card-border);
-    font-weight: 600;
-    letter-spacing: 1px;
+  background-color: rgba(40, 38, 38, 0.8);
+  border-bottom: 1px solid var(--card-border);
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .btn {
-    border-radius: 30px;
-    padding: 8px 20px;
-    font-weight: 500;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+  border-radius: 30px;
+  padding: 8px 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: all 0.5s ease;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
 }
 
 .btn:hover::before {
-    left: 100%;
+  left: 100%;
 }
 
 .btn-primary {
-    background-color: var(--accent-color);
-    border-color: transparent;
-    box-shadow: var(--button-glow);
+  background-color: #3a3838;
+  border-color: transparent;
+  box-shadow: var(--button-glow);
 }
 
 .btn-primary:hover {
-    background-color: #1a4b8c;
-    border-color: transparent;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  background-color: #4a4848;
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
 }
 
 .btn-danger {
-    background-color: var(--red-corner);
-    border-color: transparent;
-    box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
+  background-color: var(--red-corner);
+  border-color: transparent;
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
 }
 
 .btn-danger:hover {
-    background-color: #d32f2f;
-    border-color: transparent;
-    box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+  background-color: #d32f2f;
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
 }
 
 .footer {
-    background-color: rgba(26, 26, 46, 0.8);
-    backdrop-filter: blur(10px);
-    color: var(--text-secondary);
-    border-top: 1px solid var(--card-border);
-    position: relative;
-    z-index: 1;
+  background-color: rgba(26, 22, 22, 0.8);
+  backdrop-filter: blur(10px);
+  color: var(--text-secondary);
+  border-top: 1px solid var(--card-border);
+  position: relative;
+  z-index: 1;
 }
 
 /* Match cards */
 .match-card {
-    background-color: rgba(60, 50, 40, 0.6);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-glow);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+}
+
+.match-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .corner-box {
-    border-radius: 10px;
-    padding: 25px;
-    text-align: center;
-    color: white;
-    font-weight: 600;
-    margin-bottom: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    position: relative;
-    overflow: hidden;
+  border-radius: 10px;
+  padding: 25px;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .corner-box::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.5s ease;
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 .corner-box:hover::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .blue-corner {
-    background-color: var(--blue-corner);
-    box-shadow: 0 0 15px rgba(0, 82, 204, 0.5);
+  background-color: var(--blue-corner);
+  box-shadow: 0 0 15px rgba(0, 82, 204, 0.5);
 }
 
 .red-corner {
-    background-color: var(--red-corner);
-    box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+  background-color: var(--red-corner);
+  box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
 }
 
 .vs-text {
-    font-size: 28px;
-    font-weight: 700;
-    text-align: center;
-    margin: 10px 0;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    letter-spacing: 2px;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin: 10px 0;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  letter-spacing: 2px;
 }
 
 .result-btn {
-    width: 100%;
-    margin-top: 10px;
-    border-radius: 30px;
-    font-weight: 600;
-    letter-spacing: 1px;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 30px;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 /* Filter buttons */
 .filter-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
 }
 
 .filter-btn {
-    background-color: rgba(30, 30, 46, 0.7);
-    color: var(--text-color);
-    border: 1px solid var(--card-border);
-    border-radius: 30px;
-    padding: 8px 20px;
-    margin: 0 5px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    letter-spacing: 1px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background-color: rgba(40, 38, 38, 0.7);
+  color: var(--text-color);
+  border: 1px solid var(--card-border);
+  border-radius: 30px;
+  padding: 8px 20px;
+  margin: 0 5px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .filter-btn.active {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
 .filter-btn:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 /* Search bar */
 .search-container {
-    margin-bottom: 25px;
+  margin-bottom: 25px;
 }
 
 .search-input {
-    background-color: rgba(30, 30, 46, 0.7);
-    border: 1px solid var(--card-border);
-    color: var(--text-color);
-    border-radius: 30px;
-    padding: 12px 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
+  background-color: rgba(40, 38, 38, 0.7);
+  border: 1px solid var(--card-border);
+  color: var(--text-color);
+  border-radius: 30px;
+  padding: 12px 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
 }
 
 .search-input:focus {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-    background-color: rgba(40, 40, 60, 0.7);
-    border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  background-color: rgba(60, 58, 58, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* Athlete cards */
 .athlete-card {
-    background-color: var(--card-bg);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: var(--card-glow);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--card-border);
-    transition: all 0.3s ease;
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: var(--card-glow);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
 }
 
 .athlete-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .athlete-card.male {
-    border-left: 5px solid #4cc9f0;
-    box-shadow: 0 0 15px rgba(76, 201, 240, 0.2);
+  border-left: 5px solid var(--blue-athlete);
+  box-shadow: 0 0 15px rgba(76, 201, 240, 0.2);
 }
 
 .athlete-card.female {
-    border-left: 5px solid #f72585;
-    box-shadow: 0 0 15px rgba(247, 37, 133, 0.2);
+  border-left: 5px solid var(--pink-athlete);
+  box-shadow: 0 0 15px rgba(247, 37, 133, 0.2);
 }
 
 /* Timeline design inspired by the achievement timeline */
 .timeline-container {
-    position: relative;
-    padding-left: 40px;
-    margin-top: 40px;
+  position: relative;
+  padding-left: 40px;
+  margin-top: 40px;
 }
 
 .timeline-container::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 2px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .timeline-item {
-    position: relative;
-    margin-bottom: 40px;
+  position: relative;
+  margin-bottom: 40px;
 }
 
 .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -39px;
-    top: 15px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 2px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    z-index: 1;
+  content: "";
+  position: absolute;
+  left: -39px;
+  top: 15px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--timeline-marker-glow);
+  z-index: 1;
+}
+
+/* Athlete items in timeline */
+.athlete-item {
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: var(--card-glow);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.athlete-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.athlete-item.male {
+  border-left: 5px solid var(--blue-athlete);
+}
+
+.athlete-item.female {
+  border-left: 5px solid var(--pink-athlete);
+}
+
+.athlete-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.athlete-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.athlete-info-item {
+  margin-bottom: 5px;
+}
+
+.athlete-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn {
+  background-color: rgba(0, 123, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+}
+
+.edit-btn:hover {
+  background-color: rgba(0, 123, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+.delete-btn {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #fff;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.2);
+}
+
+.delete-btn:hover {
+  background-color: rgba(220, 53, 69, 0.4);
+  box-shadow: 0 0 15px rgba(220, 53, 69, 0.3);
 }
 
 /* Form styling */
-.form-control, .form-select {
-    background-color: rgba(30, 30, 46, 0.7);
-    border: 1px solid var(--card-border);
-    color: var(--text-color);
-    border-radius: 8px;
-    padding: 12px 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
+.form-control,
+.form-select {
+  background-color: rgba(40, 38, 38, 0.7);
+  border: 1px solid var(--card-border);
+  color: var(--text-color);
+  border-radius: 8px;
+  padding: 12px 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
 }
 
-.form-control:focus, .form-select:focus {
-    background-color: rgba(40, 40, 60, 0.7);
-    color: var(--text-color);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+.form-control:focus,
+.form-select:focus {
+  background-color: rgba(60, 58, 58, 0.7);
+  color: var(--text-color);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .form-select option {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
 }
 
 label {
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-/* Modal styling */
+/* CRITICAL MODAL FIXES - Replace the existing modal styles with these */
+
+/* Modal styling - FIXED */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  outline: 0;
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0.5rem;
+  pointer-events: all;
+  z-index: 1055;
+}
+
 .modal-content {
-    background-color: var(--secondary-color);
-    border: 1px solid var(--card-border);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(15px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  pointer-events: auto;
+  z-index: 1055;
 }
 
 .modal-header {
-    border-bottom: 1px solid var(--card-border);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--card-border);
+  z-index: 1056;
+}
+
+.modal-title {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+  z-index: 1055;
 }
 
 .modal-footer {
-    border-top: 1px solid var(--card-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid var(--card-border);
+  z-index: 1056;
 }
 
 .btn-close-white {
-    filter: brightness(0) invert(1);
-    opacity: 0.7;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+  z-index: 1060;
+  cursor: pointer;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+/* Fix for athlete cards in modals */
+.athlete-data-card {
+  position: relative;
+  z-index: 1055;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Fix for corner cards in modals */
+.corner-card {
+  position: relative;
+  z-index: 1055;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Ensure buttons in modals are clickable */
+.modal .btn,
+.modal button,
+.modal select,
+.modal input,
+.modal a {
+  position: relative;
+  z-index: 1055;
+  pointer-events: auto !important;
+}
+
+/* Ensure form elements in modals are clickable */
+.modal .form-control,
+.modal .form-select {
+  position: relative;
+  z-index: 1055;
+  pointer-events: auto !important;
+}
+
+/* Create match modal specific fixes */
+.create-match-modal .modal-dialog {
+  max-width: 90%;
+  margin: 1.75rem auto;
+}
+
+.create-match-modal .modal-content {
+  background-color: var(--primary-color);
+  border-radius: 15px;
+  overflow: visible;
+}
+
+.create-match-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  position: relative;
+  z-index: 1055;
+}
+
+.match-setup-container {
+  padding: 20px;
+  position: relative;
+  z-index: 1055;
+}
+
+.athlete-data-container {
+  background-color: rgba(50, 50, 50, 0.3);
+  padding: 20px;
+  border-left: 1px solid var(--card-border);
+  max-height: 600px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1055;
 }
 
 /* Stats cards */
 .stat-card {
-    background-color: var(--card-bg);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: var(--card-glow);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--card-border);
-    transition: all 0.3s ease;
-    height: 100%;
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--card-glow);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+  height: 100%;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    background: linear-gradient(45deg, #4cc9f0, #f72585);
-    background-clip: text; /* Standard property */
-    -webkit-background-clip: text; /* Vendor prefix for older WebKit browsers */
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #f8f8f2;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .stat-label {
-    color: var(--text-secondary);
-    font-weight: 500;
-    letter-spacing: 1px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* Create match new design */
+.create-match-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.match-setup {
+  display: flex;
+  gap: 20px;
+}
+
+.corner-section {
+  flex: 1;
+}
+
+.vs-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.athletes-selection {
+  display: flex;
+  gap: 20px;
+}
+
+.athlete-list-section {
+  flex: 1;
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: var(--card-glow);
+}
+
+.athlete-card-male {
+  background-color: var(--blue-athlete);
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+}
+
+.athlete-card-female {
+  background-color: var(--pink-athlete);
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(247, 37, 133, 0.3);
+}
+
+.athlete-card-male:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+}
+
+.athlete-card-female:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
+}
+
+.match-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.match-filter {
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-glow);
 }
 
 /* Badges */
 .badge {
-    padding: 8px 12px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Animations */
+/* Animations - MODIFIED to only apply to specific elements */
 @keyframes glow {
-    0% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    }
+  0% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  }
 }
 
-.glow-effect {
-    animation: glow 3s infinite;
+/* Removed global glow-effect class application */
+
+/* Title glow animation */
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+}
+
+.title-glow {
+  animation: titleGlow 3s infinite;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(30, 30, 46, 0.5);
+  background: rgba(40, 38, 38, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .timeline-container {
-        padding-left: 30px;
-    }
-    
-    .timeline-item::before {
-        left: -29px;
-    }
-    
-    .corner-box {
-        padding: 15px;
-    }
-    
-    .vs-text {
-        font-size: 20px;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
+  .timeline-container {
+    padding-left: 30px;
+  }
+
+  .timeline-item::before {
+    left: -29px;
+  }
+
+  .corner-box {
+    padding: 15px;
+  }
+
+  .vs-text {
+    font-size: 20px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .match-setup {
+    flex-direction: column;
+  }
+
+  .athletes-selection {
+    flex-direction: column;
+  }
+}
+
+/* Adding new styles for the redesigned create match modal */
+.create-match-modal .modal-dialog {
+  max-width: 90%;
+  margin: 1.75rem auto;
+}
+
+.create-match-modal .modal-content {
+  background-color: var(--primary-color);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.create-match-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.match-setup-container {
+  padding: 20px;
+}
+
+.athlete-data-container {
+  background-color: rgba(50, 50, 50, 0.3);
+  padding: 20px;
+  border-left: 1px solid var(--card-border);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.corner-card {
+  border-radius: 15px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.corner-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.blue-corner-card {
+  background-color: #0052cc;
+}
+
+.red-corner-card {
+  background-color: #e63946;
+}
+
+.vs-label {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.filter-section {
+  background-color: rgba(200, 200, 200, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.filter-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.range-filter {
+  margin-bottom: 15px;
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.filter-btn-red {
+  background-color: #8b2e19;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 25px;
+  transition: all 0.3s ease;
+}
+
+.filter-btn-red:hover {
+  background-color: #a33b23;
+  box-shadow: 0 0 15px rgba(163, 59, 35, 0.5);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.action-btn-red {
+  background-color: #8b2e19;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 25px;
+  transition: all 0.3s ease;
+}
+
+.action-btn-red:hover {
+  background-color: #a33b23;
+  box-shadow: 0 0 15px rgba(163, 59, 35, 0.5);
+}
+
+.athlete-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.athlete-data-card {
+  border-radius: 15px;
+  padding: 15px;
+  color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.athlete-data-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.athlete-data-card.male {
+  background-color: #4cc9f0;
+}
+
+.athlete-data-card.female {
+  background-color: #f72585;
+}
+
+.athlete-data-header {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.athlete-data-info {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.athlete-data-section {
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-glow);
+}
+
+.athlete-data-section h4 {
+  text-align: center;
+  margin-bottom: 15px;
+  text-shadow: var(--title-glow);
+}
+
+.athlete-corner-info {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.athlete-corner-info-item {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.corner-card-selected {
+  position: relative;
+}
+
+.corner-card-selected::after {
+  content: "✓";
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Range sliders styling */
+.range-slider-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.range-slider-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.noUi-target {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  box-shadow: none;
+  height: 8px;
+}
+
+.noUi-connect {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.noUi-handle {
+  background-color: white;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  width: 16px !important;
+  height: 16px !important;
+  right: -8px !important;
+  top: -5px !important;
+}
+
+.noUi-handle::before,
+.noUi-handle::after {
+  display: none;
+}
+
+/* FIXED MODAL STYLES */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0.5rem;
+  pointer-events: auto;
+}
+
+.modal-header .btn-close {
+  padding: 0.5rem;
+  margin: -0.5rem -0.5rem -0.5rem auto;
+  cursor: pointer;
+  z-index: 1060;
+}
+
+/* Ensure modal content is clickable */
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+
+/* Fix for athlete cards in modals */
+.athlete-data-card {
+  position: relative;
+  z-index: 1055;
+}
+
+/* Fix for corner cards in modals */
+.corner-card {
+  position: relative;
+  z-index: 1055;
+}
+
+/* Ensure buttons in modals are clickable */
+.modal .btn {
+  position: relative;
+  z-index: 1055;
+}
+
+/* Ensure form elements in modals are clickable */
+.modal .form-control,
+.modal .form-select {
+  position: relative;
+  z-index: 1055;
 }

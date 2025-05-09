@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- NoUiSlider CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.5.1/dist/nouislider.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -60,14 +62,102 @@
         </div>
     </footer>
 
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- NoUiSlider -->
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.5.1/dist/nouislider.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Modal fix script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Global modal fix function
+        window.fixModals = function() {
+            // Fix modal backdrop issues
+            const modalBackdrops = document.querySelectorAll('.modal-backdrop');
+            modalBackdrops.forEach(backdrop => {
+                backdrop.style.zIndex = '1040';
+            });
+            
+            // Fix modal interaction issues
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.style.zIndex = '1050';
+                
+                // Ensure modal content is clickable
+                const modalContent = modal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.zIndex = '1055';
+                    modalContent.style.position = 'relative';
+                    modalContent.style.pointerEvents = 'auto';
+                }
+                
+                // Fix close button
+                const closeBtn = modal.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.style.zIndex = '1060';
+                    closeBtn.style.position = 'relative';
+                    closeBtn.style.pointerEvents = 'auto';
+                    
+                    // Add explicit click handler for close button
+                    closeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        try {
+                            const modalInstance = bootstrap.Modal.getInstance(modal);
+                            if (modalInstance) {
+                                modalInstance.hide();
+                            } else {
+                                // Fallback if bootstrap instance not available
+                                modal.classList.remove('show');
+                                modal.style.display = 'none';
+                                document.body.classList.remove('modal-open');
+                                const backdrops = document.querySelectorAll('.modal-backdrop');
+                                backdrops.forEach(backdrop => backdrop.remove());
+                            }
+                        } catch (error) {
+                            console.error('Error closing modal:', error);
+                            // Manual fallback
+                            modal.classList.remove('show');
+                            modal.style.display = 'none';
+                            document.body.classList.remove('modal-open');
+                            const backdrops = document.querySelectorAll('.modal-backdrop');
+                            backdrops.forEach(backdrop => backdrop.remove());
+                        }
+                    });
+                }
+                
+                // Make all interactive elements in modal clickable
+                const interactiveElements = modal.querySelectorAll('button, a, input, select, .athlete-data-card, .corner-card');
+                interactiveElements.forEach(element => {
+                    element.style.position = 'relative';
+                    element.style.zIndex = '1055';
+                    element.style.pointerEvents = 'auto';
+                });
+            });
+        };
+        
+        // Run fix immediately
+        window.fixModals();
+        
+        // Run fix again after a short delay to ensure it applies after Bootstrap initializes
+        setTimeout(window.fixModals, 1000);
+        
+        // Add click handlers for modal triggers
+        const modalTriggers = document.querySelectorAll('[data-bs-toggle="modal"]');
+        modalTriggers.forEach(trigger => {
+            trigger.addEventListener('click', function() {
+                // Run fix after modal is shown
+                setTimeout(window.fixModals, 500);
+            });
+        });
+    });
+    </script>
+    
     {% block scripts %}{% endblock %}
 </body>
 </html>
