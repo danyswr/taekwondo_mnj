@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Matches Management</h1>
+            <a href="{{ url_for('create_match_form') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create Match
+            </a>
+        </div>
+        
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Filters</h5>
+                <div class="d-flex mb-3">
+                    <button class="filter-btn gender-filter me-2 {% if gender_filter == '' %}active{% endif %}" data-gender="">All</button>
+                    <button class="filter-btn gender-filter me-2 {% if gender_filter == 'male' %}active{% endif %}" data-gender="male">Male</button>
+                    <button class="filter-btn gender-filter {% if gender_filter == 'female' %}active{% endif %}" data-gender="female">Female</button>
+                </div>
+                
+                <form action="{{ url_for('matches') }}" method="GET" class="row g-3">
+                    <div class="col-md-10">
+                        <input type="hidden" name="gender" value="{{ gender_filter }}">
+                        <input type="text" class="form-control search-input" name="search" placeholder="Search by title or athlete name..." value="{{ search_query }}">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+                
+                <div class="mt-2">
+                    <button id="reset-filter" class="btn btn-outline-secondary btn-sm">Reset Filters</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Matches List -->
+        <div class="row">
+            {% for match in matches %}
+            <div class="col-md-6">
+                <div class="match-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>{{ match.title }}</h4>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('match_detail', id=match.id) }}">
+                                        <i class="fas fa-eye me-2"></i>View Details
+                                    </a>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('delete_match', id=match.id) }}" method="POST">
+                                        <button type="submit" class="dropdown-item delete-confirm">
+                                            <i class="fas fa-trash me-2"></i>Delete Match
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="corner-box blue-corner">
+                                {{ match.blue_name }}
+                            </div>
+                            <form action="{{ url_for('update_match_result', id=match.id) }}" method="POST">
+                                <input type="hidden" name="result" value="blue">
+                                <button type="submit" class="btn btn-primary result-btn {% if match.result == 'blue' %}disabled{% endif %}">
+                                    {% if match.result == 'blue' %}
+                                    <i class="fas fa-trophy me-2"></i>Winner
+                                    {% else %}
+                                    Blue Win
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <div class="vs-text">VS</div>
+                        </div>
+                        <div class="col-5">
+                            <div class="corner-box red-corner">
+                                {{ match.red_name }}
+                            </div>
+                            <form action="{{ url_for('update_match_result', id=match.id) }}" method="POST">
+                                <input type="hidden" name="result" value="red">
+                                <button type="submit" class="btn btn-danger result-btn {% if match.result == 'red' %}disabled{% endif %}">
+                                    {% if match.result == 'red' %}
+                                    <i class="fas fa-trophy me-2"></i>Winner
+                                    {% else %}
+                                    Red Win
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <span class="badge {% if match.result == 'draw' %}bg-secondary{% elif match.result == 'blue' %}bg-primary{% else %}bg-danger{% endif %}">
+                            {% if match.result == 'draw' %}
+                            Draw
+                            {% elif match.result == 'blue' %}
+                            Blue Corner Won
+                            {% else %}
+                            Red Corner Won
+                            {% endif %}
+                        </span>
+                        <span class="badge bg-info ms-2">{{ match.gender|capitalize }}</span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">No matches found. Create some matches to get started!</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

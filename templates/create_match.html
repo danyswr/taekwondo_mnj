@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h2>Create New Match</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('add_match') }}" method="POST">
+                    <div class="mb-4">
+                        <label for="title" class="form-label">Match Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="match-gender-filter" class="form-label">Filter Athletes by Gender</label>
+                        <select class="form-select" id="match-gender-filter" name="gender">
+                            <option value="">All</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="corner-box blue-corner">
+                                <h3>Blue Corner</h3>
+                            </div>
+                            <div class="mb-3">
+                                <label for="blue_corner_id" class="form-label">Select Athlete</label>
+                                <select class="form-select" id="blue_corner_id" name="blue_corner_id" required>
+                                    <option value="">Select Athlete</option>
+                                    {% for athlete in athletes %}
+                                    <option value="{{ athlete.id }}">{{ athlete.full_name }} ({{ athlete.gender|capitalize }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 d-flex align-items-center justify-content-center">
+                            <div class="vs-text">VS</div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="corner-box red-corner">
+                                <h3>Red Corner</h3>
+                            </div>
+                            <div class="mb-3">
+                                <label for="red_corner_id" class="form-label">Select Athlete</label>
+                                <select class="form-select" id="red_corner_id" name="red_corner_id" required>
+                                    <option value="">Select Athlete</option>
+                                    {% for athlete in athletes %}
+                                    <option value="{{ athlete.id }}">{{ athlete.full_name }} ({{ athlete.gender|capitalize }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('matches') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Create Match</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

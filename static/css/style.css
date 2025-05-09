@@ -1,0 +1,210 @@
+:root {
+    --primary-color: #2a1b3d;
+    --secondary-color: #44318d;
+    --accent-color: #8265a7;
+    --light-color: #a4b3b6;
+    --dark-color: #1a1a2e;
+    --blue-corner: #0052cc;
+    --red-corner: #e63946;
+    --card-bg: #352f44;
+    --card-border: #5c5470;
+}
+
+body {
+    background-color: var(--dark-color);
+    color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #fff;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background-color: var(--secondary-color);
+    border-bottom: 1px solid var(--card-border);
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-danger {
+    background-color: var(--red-corner);
+    border-color: var(--red-corner);
+}
+
+.footer {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+}
+
+/* Match cards */
+.match-card {
+    background-color: #b08968;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.corner-box {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.blue-corner {
+    background-color: var(--blue-corner);
+}
+
+.red-corner {
+    background-color: var(--red-corner);
+}
+
+.vs-text {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.result-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Filter buttons */
+.filter-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    background-color: var(--accent-color);
+}
+
+.filter-btn:hover {
+    background-color: var(--accent-color);
+}
+
+/* Search bar */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
+    color: white;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Athlete cards */
+.athlete-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.athlete-card.male {
+    border-left: 5px solid #4cc9f0;
+}
+
+.athlete-card.female {
+    border-left: 5px solid #f72585;
+}
+
+/* Timeline design inspired by the achievement timeline */
+.timeline-container {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: var(--accent-color);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    border: 2px solid var(--light-color);
+}
+
+/* Form styling */
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
+    color: white;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(140, 101, 167, 0.25);
+}
+
+.form-select option {
+    background-color: var(--card-bg);
+    color: white;
+}
+
+label {
+    color: var(--light-color);
+    margin-bottom: 5px;
+}

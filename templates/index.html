@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="display-4 mb-4">Taekwondo Tournament Manager</h1>
+                <p class="lead">Manage your taekwondo tournament data efficiently</p>
+                
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-4x mb-3" style="color: #4cc9f0;"></i>
+                                <h3>Athletes</h3>
+                                <p>Manage athlete information, including personal details, belt ranks, and dojangs.</p>
+                                <a href="{{ url_for('athletes') }}" class="btn btn-primary mt-3">Manage Athletes</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-trophy fa-4x mb-3" style="color: #f72585;"></i>
+                                <h3>Matches</h3>
+                                <p>Create and manage tournament matches, record results, and track performance.</p>
+                                <a href="{{ url_for('matches') }}" class="btn btn-primary mt-3">Manage Matches</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <h2>Quick Stats</h2>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h3 id="athlete-count">-</h3>
+                                    <p>Total Athletes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h3 id="match-count">-</h3>
+                                    <p>Total Matches</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h3 id="male-count">-</h3>
+                                    <p>Male Athletes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h3 id="female-count">-</h3>
+                                    <p>Female Athletes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Fetch stats for the dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/stats')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('athlete-count').textContent = data.athlete_count;
+                document.getElementById('match-count').textContent = data.match_count;
+                document.getElementById('male-count').textContent = data.male_count;
+                document.getElementById('female-count').textContent = data.female_count;
+            })
+            .catch(error => console.error('Error fetching stats:', error));
+    });
+</script>
+{% endblock %}
