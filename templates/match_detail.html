@@ -2,18 +2,23 @@
 
 {% block content %}
 <div class="row justify-content-center">
+    <div class="col-md-10 text-center mb-5">
+        <h1 class="page-title">Match Details</h1>
+    </div>
+</div>
+
+<div class="row justify-content-center">
     <div class="col-md-10">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h2>Match Details</h2>
+                <h2>{{ match.title }}</h2>
                 <a href="{{ url_for('matches') }}" class="btn btn-outline-light btn-sm">
                     <i class="fas fa-arrow-left me-2"></i>Back to Matches
                 </a>
             </div>
             <div class="card-body">
-                <div class="mb-4">
-                    <h3 class="text-center">{{ match.title }}</h3>
-                    <p class="text-center text-muted">
+                <div class="mb-4 text-center">
+                    <p class="text-muted">
                         Created: {{ match.created_at.strftime('%Y-%m-%d %H:%M') }}
                         {% if match.created_at != match.updated_at %}
                         | Updated: {{ match.updated_at.strftime('%Y-%m-%d %H:%M') }}
@@ -62,7 +67,7 @@
                         </div>
                     </div>
                     
-                    <div class="text-center mt-4">
+                    <div class="text-center mt-5">
                         <h4>Match Result</h4>
                         <div class="badge {% if match.result == 'draw' %}bg-secondary{% elif match.result == 'blue' %}bg-primary{% else %}bg-danger{% endif %} p-2 fs-5">
                             {% if match.result == 'draw' %}
@@ -75,7 +80,7 @@
                         </div>
                         
                         {% if match.result != 'draw' %}
-                        <div class="mt-2">
+                        <div class="mt-3">
                             <form action="{{ url_for('update_match_result', id=match.id) }}" method="POST">
                                 <input type="hidden" name="result" value="draw">
                                 <button type="submit" class="btn btn-outline-secondary btn-sm">

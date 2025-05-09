@@ -1,10 +1,15 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Athletes Management</h1>
+<div class="row justify-content-center">
+    <div class="col-md-10 text-center mb-5">
+        <h1 class="page-title">Athletes Management</h1>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="d-flex justify-content-end mb-4">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAthleteModal">
                 <i class="fas fa-plus me-2"></i>Add Athlete
             </button>
@@ -13,10 +18,11 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Filters</h5>
-                <div class="d-flex mb-3">
-                    <button class="filter-btn gender-filter me-2 {% if gender_filter == '' %}active{% endif %}" data-gender="">All</button>
-                    <button class="filter-btn gender-filter me-2 {% if gender_filter == 'male' %}active{% endif %}" data-gender="male">Male</button>
+                <h5 class="card-title mb-4">Filters</h5>
+                
+                <div class="filter-container mb-4">
+                    <button class="filter-btn gender-filter {% if gender_filter == '' %}active{% endif %}" data-gender="">All</button>
+                    <button class="filter-btn gender-filter {% if gender_filter == 'male' %}active{% endif %}" data-gender="male">Male</button>
                     <button class="filter-btn gender-filter {% if gender_filter == 'female' %}active{% endif %}" data-gender="female">Female</button>
                 </div>
                 
@@ -30,7 +36,7 @@
                     </div>
                 </form>
                 
-                <div class="mt-2">
+                <div class="mt-3 text-center">
                     <button id="reset-filter" class="btn btn-outline-secondary btn-sm">Reset Filters</button>
                 </div>
             </div>
@@ -44,7 +50,7 @@
                     <div class="row">
                         <div class="col-md-8">
                             <h4>{{ athlete.full_name }}</h4>
-                            <div class="row mt-3">
+                            <div class="row mt-4">
                                 <div class="col-md-6">
                                     <p><strong>Date of Birth:</strong> {{ athlete.date_of_birth }}</p>
                                     <p><strong>Gender:</strong> {{ athlete.gender|capitalize }}</p>
@@ -58,7 +64,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 d-flex flex-column justify-content-center align-items-end">
-                            <button class="btn btn-outline-primary mb-2" data-bs-toggle="modal" data-bs-target="#editAthleteModal{{ athlete.id }}">
+                            <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#editAthleteModal{{ athlete.id }}">
                                 <i class="fas fa-edit me-2"></i>Edit
                             </button>
                             <form action="{{ url_for('delete_athlete', id=athlete.id) }}" method="POST">
@@ -74,7 +80,7 @@
             <!-- Edit Athlete Modal -->
             <div class="modal fade" id="editAthleteModal{{ athlete.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content bg-dark text-light">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Edit Athlete</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -145,7 +151,7 @@
 <!-- Add Athlete Modal -->
 <div class="modal fade" id="addAthleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content bg-dark text-light">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add New Athlete</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
