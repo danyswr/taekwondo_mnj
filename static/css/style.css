@@ -498,6 +498,8 @@ label {
   height: 100%;
   overflow: auto;
   outline: 0;
+  /* CRITICAL FIX: Make sure modal doesn't block interactions with its container */
+  pointer-events: none;
 }
 
 .modal-dialog {
@@ -569,6 +571,8 @@ label {
   width: 100vw;
   height: 100vh;
   background-color: #000;
+  /* CRITICAL FIX: Make sure backdrop doesn't block interactions */
+  pointer-events: none;
 }
 
 .modal-backdrop.show {
@@ -611,39 +615,298 @@ label {
 }
 
 /* Create match modal specific fixes */
+.create-match-modal {
+  z-index: 1050 !important;
+  /* CRITICAL FIX: Make sure modal doesn't block interactions with its container */
+  pointer-events: none !important;
+}
+
 .create-match-modal .modal-dialog {
   max-width: 90%;
   margin: 1.75rem auto;
+  pointer-events: auto !important;
 }
 
 .create-match-modal .modal-content {
   background-color: var(--primary-color);
   border-radius: 15px;
   overflow: visible;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
 }
 
-.create-match-layout {
+.create-match-modal .modal-body {
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.create-match-container {
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.match-setup-section {
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.athletes-section {
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.corner-cards {
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.corner-card {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.corner-card.blue {
+  background-color: var(--blue-corner);
+  color: white;
+  margin-right: 10px;
+}
+
+.corner-card.red {
+  background-color: var(--red-corner);
+  color: white;
+  margin-left: 10px;
+}
+
+.corner-card.selected {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  transform: translateY(-5px);
+}
+
+.vs-text-large {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 15px;
+}
+
+.athlete-data-card {
+  background-color: rgba(60, 60, 60, 0.7);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.athlete-data-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.athlete-data-card.male {
+  border-left: 4px solid var(--blue-athlete);
+}
+
+.athlete-data-card.female {
+  border-left: 4px solid var(--pink-athlete);
+}
+
+.athlete-data-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.athlete-data-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.athlete-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.athlete-section-title.male {
+  color: var(--blue-athlete);
+}
+
+.athlete-section-title.female {
+  color: var(--pink-athlete);
+}
+
+.athletes-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.filter-section {
+  background-color: rgba(40, 40, 40, 0.7);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.filter-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.filter-row {
+  display: flex;
   gap: 20px;
-  position: relative;
-  z-index: 1055;
+  margin-bottom: 15px;
 }
 
-.match-setup-container {
-  padding: 20px;
-  position: relative;
-  z-index: 1055;
+.filter-group {
+  flex: 1;
 }
 
-.athlete-data-container {
-  background-color: rgba(50, 50, 50, 0.3);
-  padding: 20px;
-  border-left: 1px solid var(--card-border);
-  max-height: 600px;
-  overflow-y: auto;
+.range-slider {
+  margin-top: 10px;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.filter-btn {
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
   position: relative;
-  z-index: 1055;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.filter-btn.reset {
+  background-color: rgba(100, 100, 100, 0.5);
+  color: white;
+}
+
+.filter-btn.apply {
+  background-color: var(--blue-corner);
+  color: white;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.action-btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.action-btn.create {
+  background-color: var(--blue-corner);
+  color: white;
+}
+
+.action-btn.cancel {
+  background-color: rgba(100, 100, 100, 0.5);
+  color: white;
+}
+
+.athlete-corner-card {
+  flex: 1;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1055 !important;
+  pointer-events: auto !important;
+}
+
+.athlete-corner-card.blue {
+  background-color: var(--blue-corner);
+  color: white;
+  margin-right: 10px;
+}
+
+.athlete-corner-card.red {
+  background-color: var(--red-corner);
+  color: white;
+  margin-left: 10px;
+}
+
+.athlete-corner-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.athlete-corner-info {
+  font-size: 14px;
+}
+
+.athlete-corner-info-item {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.athlete-corner-info-label {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Stats cards */
@@ -1106,60 +1369,8 @@ label {
   display: none;
 }
 
-/* FIXED MODAL STYLES */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1050;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  outline: 0;
-}
-
-.modal-dialog {
-  position: relative;
-  width: auto;
-  margin: 0.5rem;
-  pointer-events: auto;
-}
-
-.modal-header .btn-close {
-  padding: 0.5rem;
-  margin: -0.5rem -0.5rem -0.5rem auto;
-  cursor: pointer;
-  z-index: 1060;
-}
-
-/* Ensure modal content is clickable */
-.modal-body {
-  position: relative;
-  flex: 1 1 auto;
-  padding: 1rem;
-}
-
-/* Fix for athlete cards in modals */
-.athlete-data-card {
-  position: relative;
-  z-index: 1055;
-}
-
-/* Fix for corner cards in modals */
-.corner-card {
-  position: relative;
-  z-index: 1055;
-}
-
-/* Ensure buttons in modals are clickable */
-.modal .btn {
-  position: relative;
-  z-index: 1055;
-}
-
-/* Ensure form elements in modals are clickable */
-.modal .form-control,
-.modal .form-select {
-  position: relative;
-  z-index: 1055;
+/* CRITICAL FIX: Ensure body doesn't get locked */
+body.modal-open {
+  overflow: auto !important;
+  padding-right: 0 !important;
 }

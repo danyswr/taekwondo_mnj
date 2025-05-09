@@ -73,7 +73,7 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
-    <!-- Modal fix script -->
+    <!-- Modal fix script - UPDATED -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Global modal fix function
@@ -82,12 +82,17 @@
             const modalBackdrops = document.querySelectorAll('.modal-backdrop');
             modalBackdrops.forEach(backdrop => {
                 backdrop.style.zIndex = '1040';
+                // CRITICAL FIX: Make sure backdrop doesn't block interactions
+                backdrop.style.pointerEvents = 'none';
             });
             
             // Fix modal interaction issues
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
                 modal.style.zIndex = '1050';
+                
+                // CRITICAL FIX: Make sure modal doesn't block interactions with its container
+                modal.style.pointerEvents = 'none';
                 
                 // Ensure modal content is clickable
                 const modalContent = modal.querySelector('.modal-content');
@@ -139,12 +144,126 @@
                     element.style.pointerEvents = 'auto';
                 });
             });
+            
+            // CRITICAL FIX: Fix for create match modal specifically
+            const createMatchModal = document.getElementById('createMatchModal');
+            if (createMatchModal) {
+                // Fix modal content
+                const modalContent = createMatchModal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.zIndex = '1055';
+                    modalContent.style.position = 'relative';
+                    modalContent.style.pointerEvents = 'auto';
+                }
+                
+                // Fix modal body
+                const modalBody = createMatchModal.querySelector('.modal-body');
+                if (modalBody) {
+                    modalBody.style.zIndex = '1055';
+                    modalBody.style.position = 'relative';
+                    modalBody.style.pointerEvents = 'auto';
+                }
+                
+                // Fix corner cards
+                const cornerCards = createMatchModal.querySelectorAll('.corner-card');
+                cornerCards.forEach(card => {
+                    card.style.zIndex = '1055';
+                    card.style.position = 'relative';
+                    card.style.pointerEvents = 'auto';
+                    card.style.cursor = 'pointer';
+                    
+                    // Remove existing click handlers
+                    card.removeAttribute('onclick');
+                    
+                    // Add new click handler
+                    card.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        const cornerId = this.id;
+                        console.log("Corner card clicked:", cornerId);
+                        
+                        if (cornerId.includes('blue')) {
+                            window.selectCorner('blue');
+                        } else if (cornerId.includes('red')) {
+                            window.selectCorner('red');
+                        }
+                    });
+                });
+                
+                // Fix athlete cards
+                const athleteCards = createMatchModal.querySelectorAll('.athlete-data-card');
+                athleteCards.forEach(card => {
+                    card.style.zIndex = '1055';
+                    card.style.position = 'relative';
+                    card.style.pointerEvents = 'auto';
+                    card.style.cursor = 'pointer';
+                    
+                    // Remove existing click handlers
+                    card.removeAttribute('onclick');
+                    
+                    // Add new click handler
+                    card.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        console.log("Athlete card clicked:", this.dataset.name);
+                        window.selectAthlete(this);
+                    });
+                });
+                
+                // Fix filter buttons
+                const filterButtons = createMatchModal.querySelectorAll('.filter-btn');
+                filterButtons.forEach(button => {
+                    button.style.zIndex = '1055';
+                    button.style.position = 'relative';
+                    button.style.pointerEvents = 'auto';
+                    
+                    // Remove existing click handlers
+                    button.removeAttribute('onclick');
+                    
+                    // Add new click handlers
+                    if (button.classList.contains('reset')) {
+                        button.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            window.resetFilters();
+                        });
+                    } else if (button.classList.contains('apply')) {
+                        button.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            window.applyFilters();
+                        });
+                    }
+                });
+                
+                // Fix action buttons
+                const actionButtons = createMatchModal.querySelectorAll('.action-btn');
+                actionButtons.forEach(button => {
+                    button.style.zIndex = '1055';
+                    button.style.position = 'relative';
+                    button.style.pointerEvents = 'auto';
+                    
+                    if (button.classList.contains('cancel')) {
+                        button.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            
+                            if (typeof bootstrap !== "undefined") {
+                                const modalInstance = bootstrap.Modal.getInstance(createMatchModal);
+                                if (modalInstance) {
+                                    modalInstance.hide();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
         };
         
         // Run fix immediately
         window.fixModals();
         
         // Run fix again after a short delay to ensure it applies after Bootstrap initializes
+        setTimeout(window.fixModals, 500);
         setTimeout(window.fixModals, 1000);
         
         // Add click handlers for modal triggers
@@ -152,9 +271,219 @@
         modalTriggers.forEach(trigger => {
             trigger.addEventListener('click', function() {
                 // Run fix after modal is shown
+                setTimeout(window.fixModals, 300);
                 setTimeout(window.fixModals, 500);
+                setTimeout(window.fixModals, 1000);
             });
         });
+        
+        // CRITICAL FIX: Add event listener for when modal is shown
+        const createMatchModal = document.getElementById('createMatchModal');
+        if (createMatchModal) {
+            createMatchModal.addEventListener('shown.bs.modal', function() {
+                window.fixModals();
+                
+                // Make sure body doesn't have overflow hidden
+                document.body.style.overflow = 'auto';
+                document.body.style.paddingRight = '0';
+            });
+        }
+        
+        // CRITICAL FIX: Make sure functions are globally available
+        window.selectCorner = function(corner) {
+            console.log("selectCorner called with:", corner);
+            window.selectedCorner = corner;
+            
+            // Update UI to show selected corner
+            const blueCornerCard = document.getElementById('blue-corner-card');
+            const redCornerCard = document.getElementById('red-corner-card');
+            
+            if (corner === 'blue') {
+                blueCornerCard.classList.add('selected');
+                redCornerCard.classList.remove('selected');
+            } else {
+                blueCornerCard.classList.remove('selected');
+                redCornerCard.classList.add('selected');
+            }
+        };
+        
+        window.selectAthlete = function(athleteElement) {
+            console.log("selectAthlete called with:", athleteElement);
+            
+            if (!window.selectedCorner) {
+                alert('Please select a corner (Blue or Red) first');
+                return;
+            }
+            
+            const athleteId = athleteElement.dataset.id;
+            const athleteName = athleteElement.dataset.name;
+            const athleteDob = athleteElement.dataset.dob;
+            const athleteWeight = athleteElement.dataset.weight;
+            const athleteHeight = athleteElement.dataset.height;
+            const athleteBelt = athleteElement.dataset.belt;
+            const athleteDojang = athleteElement.dataset.dojang;
+            const athleteGender = athleteElement.dataset.gender;
+            
+            console.log("Athlete data:", {
+                id: athleteId,
+                name: athleteName,
+                dob: athleteDob,
+                weight: athleteWeight,
+                height: athleteHeight,
+                belt: athleteBelt,
+                dojang: athleteDojang,
+                gender: athleteGender
+            });
+            
+            // Create athlete data object
+            const athleteData = {
+                id: athleteId,
+                name: athleteName,
+                dob: athleteDob,
+                weight: athleteWeight,
+                height: athleteHeight,
+                belt: athleteBelt,
+                dojang: athleteDojang,
+                gender: athleteGender
+            };
+            
+            // Update the appropriate corner
+            if (window.selectedCorner === 'blue') {
+                window.blueCornerAthlete = athleteData;
+                document.getElementById('blue_corner_id').value = athleteId;
+                window.updateCornerCard('blue', athleteData);
+            } else {
+                window.redCornerAthlete = athleteData;
+                document.getElementById('red_corner_id').value = athleteId;
+                window.updateCornerCard('red', athleteData);
+            }
+        };
+        
+        window.updateCornerCard = function(corner, athleteData) {
+            console.log("updateCornerCard called for", corner, "with data:", athleteData);
+            
+            const cornerCard = document.getElementById(`${corner}-corner-card`);
+            
+            // Calculate age from date of birth
+            const dob = new Date(athleteData.dob);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            // Update corner card with athlete info
+            cornerCard.innerHTML = `
+                <div class="athlete-corner-name">${athleteData.name}</div>
+                <div class="athlete-corner-info">
+                    <div class="athlete-corner-info-item">
+                        <span class="athlete-corner-info-label">Age</span>
+                        <span class="athlete-corner-info-value">${age} years</span>
+                    </div>
+                    <div class="athlete-corner-info-item">
+                        <span class="athlete-corner-info-label">Belt</span>
+                        <span class="athlete-corner-info-value">${athleteData.belt}</span>
+                    </div>
+                    <div class="athlete-corner-info-item">
+                        <span class="athlete-corner-info-label">Weight</span>
+                        <span class="athlete-corner-info-value">${athleteData.weight} kg</span>
+                    </div>
+                    <div class="athlete-corner-info-item">
+                        <span class="athlete-corner-info-label">Height</span>
+                        <span class="athlete-corner-info-value">${athleteData.height} cm</span>
+                    </div>
+                    <div class="athlete-corner-info-item">
+                        <span class="athlete-corner-info-label">Dojang</span>
+                        <span class="athlete-corner-info-value">${athleteData.dojang}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Change class from corner-card to athlete-corner-card
+            cornerCard.classList.remove('corner-card');
+            cornerCard.classList.add('athlete-corner-card');
+        };
+        
+        window.resetFilters = function() {
+            console.log("resetFilters called");
+            
+            document.getElementById('age-range').value = 18;
+            document.getElementById('weight-range').value = 60;
+            document.getElementById('height-range').value = 170;
+            document.getElementById('gender-filter').value = '';
+            document.getElementById('athlete-search').value = '';
+            
+            // Update displayed values
+            document.getElementById('age-value').textContent = 18;
+            document.getElementById('weight-value').textContent = 60;
+            document.getElementById('height-value').textContent = 170;
+            
+            // Show all athletes
+            window.showAllAthletes();
+        };
+        
+        window.applyFilters = function() {
+            console.log("applyFilters called");
+            
+            const ageValue = parseInt(document.getElementById('age-range').value);
+            const weightValue = parseInt(document.getElementById('weight-range').value);
+            const heightValue = parseInt(document.getElementById('height-range').value);
+            const genderValue = document.getElementById('gender-filter').value;
+            const searchValue = document.getElementById('athlete-search').value.toLowerCase();
+            
+            console.log("Filter values:", {
+                age: ageValue,
+                weight: weightValue,
+                height: heightValue,
+                gender: genderValue,
+                search: searchValue
+            });
+            
+            // Get all athlete cards
+            const athleteCards = document.querySelectorAll('.athlete-data-card');
+            
+            // Filter athletes
+            athleteCards.forEach(card => {
+                // Get athlete data
+                const dob = new Date(card.dataset.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                
+                const weight = parseFloat(card.dataset.weight);
+                const height = parseFloat(card.dataset.height);
+                const gender = card.dataset.gender;
+                const name = card.dataset.name.toLowerCase();
+                const dojang = card.dataset.dojang.toLowerCase();
+                
+                // Check if athlete matches filters
+                const ageMatch = Math.abs(age - ageValue) <= 5; // Within 5 years of selected age
+                const weightMatch = Math.abs(weight - weightValue) <= 10; // Within 10kg of selected weight
+                const heightMatch = Math.abs(height - heightValue) <= 15; // Within 15cm of selected height
+                const genderMatch = genderValue === '' || gender === genderValue;
+                const searchMatch = searchValue === '' || name.includes(searchValue) || dojang.includes(searchValue);
+                
+                // Show or hide athlete card
+                if (ageMatch && weightMatch && heightMatch && genderMatch && searchMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        };
+        
+        window.showAllAthletes = function() {
+            console.log("showAllAthletes called");
+            
+            const athleteCards = document.querySelectorAll('.athlete-data-card');
+            athleteCards.forEach(card => {
+                card.style.display = 'block';
+            });
+        };
     });
     </script>
     

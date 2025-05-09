@@ -250,13 +250,13 @@
                             </div>
                             
                             <div class="corner-cards">
-                                <div id="blue-corner-card" class="corner-card blue" onclick="selectCorner('blue')">
+                                <div id="blue-corner-card" class="corner-card blue">
                                     Blue Corner
                                 </div>
                                 
                                 <div class="vs-text-large">VS</div>
                                 
-                                <div id="red-corner-card" class="corner-card red" onclick="selectCorner('red')">
+                                <div id="red-corner-card" class="corner-card red">
                                     Red Corner
                                 </div>
                             </div>
@@ -325,14 +325,14 @@
                                 </div>
                                 
                                 <div class="filter-buttons">
-                                    <button type="button" class="filter-btn reset" onclick="resetFilters()">Reset</button>
-                                    <button type="button" class="filter-btn apply" onclick="applyFilters()">Apply filter</button>
+                                    <button type="button" class="filter-btn reset">Reset</button>
+                                    <button type="button" class="filter-btn apply">Apply filter</button>
                                 </div>
                             </div>
                             
                             <div class="action-buttons">
                                 <button type="submit" class="action-btn create">Create Match</button>
-                                <button type="button" class="action-btn cancel" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="action-btn cancel">Cancel</button>
                             </div>
                         </div>
                         
@@ -341,7 +341,7 @@
                             <div id="male-athletes-container" class="athletes-container">
                                 {% for athlete in athletes %}
                                 {% if athlete.gender == 'male' %}
-                                <div class="athlete-data-card male" data-id="{{ athlete.id }}" data-gender="{{ athlete.gender }}" data-name="{{ athlete.full_name }}" data-dob="{{ athlete.date_of_birth }}" data-weight="{{ athlete.weight }}" data-height="{{ athlete.height }}" data-belt="{{ athlete.belt_rank }}" data-dojang="{{ athlete.dojang_name }}" onclick="selectAthlete(this)">
+                                <div class="athlete-data-card male" data-id="{{ athlete.id }}" data-gender="{{ athlete.gender }}" data-name="{{ athlete.full_name }}" data-dob="{{ athlete.date_of_birth }}" data-weight="{{ athlete.weight }}" data-height="{{ athlete.height }}" data-belt="{{ athlete.belt_rank }}" data-dojang="{{ athlete.dojang_name }}">
                                     <div class="athlete-data-title">{{ athlete.full_name }}</div>
                                     <div class="athlete-data-info">
                                         <span>{{ athlete.date_of_birth }}</span>
@@ -358,7 +358,7 @@
                             <div id="female-athletes-container" class="athletes-container">
                                 {% for athlete in athletes %}
                                 {% if athlete.gender == 'female' %}
-                                <div class="athlete-data-card female" data-id="{{ athlete.id }}" data-gender="{{ athlete.gender }}" data-name="{{ athlete.full_name }}" data-dob="{{ athlete.date_of_birth }}" data-weight="{{ athlete.weight }}" data-height="{{ athlete.height }}" data-belt="{{ athlete.belt_rank }}" data-dojang="{{ athlete.dojang_name }}" onclick="selectAthlete(this)">
+                                <div class="athlete-data-card female" data-id="{{ athlete.id }}" data-gender="{{ athlete.gender }}" data-name="{{ athlete.full_name }}" data-dob="{{ athlete.date_of_birth }}" data-weight="{{ athlete.weight }}" data-height="{{ athlete.height }}" data-belt="{{ athlete.belt_rank }}" data-dojang="{{ athlete.dojang_name }}">
                                     <div class="athlete-data-title">{{ athlete.full_name }}</div>
                                     <div class="athlete-data-info">
                                         <span>{{ athlete.date_of_birth }}</span>
@@ -388,20 +388,26 @@
     
     // Function to select a corner (blue or red)
     function selectCorner(corner) {
+        console.log("selectCorner called with:", corner);
         selectedCorner = corner;
         
         // Update UI to show selected corner
+        const blueCornerCard = document.getElementById('blue-corner-card');
+        const redCornerCard = document.getElementById('red-corner-card');
+        
         if (corner === 'blue') {
-            document.getElementById('blue-corner-card').classList.add('selected');
-            document.getElementById('red-corner-card').classList.remove('selected');
+            blueCornerCard.classList.add('selected');
+            redCornerCard.classList.remove('selected');
         } else {
-            document.getElementById('blue-corner-card').classList.remove('selected');
-            document.getElementById('red-corner-card').classList.add('selected');
+            blueCornerCard.classList.remove('selected');
+            redCornerCard.classList.add('selected');
         }
     }
     
     // Function to select an athlete
     function selectAthlete(athleteElement) {
+        console.log("selectAthlete called with:", athleteElement);
+        
         if (!selectedCorner) {
             alert('Please select a corner (Blue or Red) first');
             return;
@@ -415,6 +421,17 @@
         const athleteBelt = athleteElement.dataset.belt;
         const athleteDojang = athleteElement.dataset.dojang;
         const athleteGender = athleteElement.dataset.gender;
+        
+        console.log("Athlete data:", {
+            id: athleteId,
+            name: athleteName,
+            dob: athleteDob,
+            weight: athleteWeight,
+            height: athleteHeight,
+            belt: athleteBelt,
+            dojang: athleteDojang,
+            gender: athleteGender
+        });
         
         // Create athlete data object
         const athleteData = {
@@ -442,6 +459,8 @@
     
     // Function to update corner card with athlete data
     function updateCornerCard(corner, athleteData) {
+        console.log("updateCornerCard called for", corner, "with data:", athleteData);
+        
         const cornerCard = document.getElementById(`${corner}-corner-card`);
         
         // Calculate age from date of birth
@@ -487,6 +506,8 @@
     
     // Function to reset filters
     function resetFilters() {
+        console.log("resetFilters called");
+        
         document.getElementById('age-range').value = 18;
         document.getElementById('weight-range').value = 60;
         document.getElementById('height-range').value = 170;
@@ -504,11 +525,21 @@
     
     // Function to apply filters
     function applyFilters() {
+        console.log("applyFilters called");
+        
         const ageValue = parseInt(document.getElementById('age-range').value);
         const weightValue = parseInt(document.getElementById('weight-range').value);
         const heightValue = parseInt(document.getElementById('height-range').value);
         const genderValue = document.getElementById('gender-filter').value;
         const searchValue = document.getElementById('athlete-search').value.toLowerCase();
+        
+        console.log("Filter values:", {
+            age: ageValue,
+            weight: weightValue,
+            height: heightValue,
+            gender: genderValue,
+            search: searchValue
+        });
         
         // Get all athlete cards
         const athleteCards = document.querySelectorAll('.athlete-data-card');
@@ -548,46 +579,265 @@
     
     // Function to show all athletes
     function showAllAthletes() {
+        console.log("showAllAthletes called");
+        
         const athleteCards = document.querySelectorAll('.athlete-data-card');
         athleteCards.forEach(card => {
             card.style.display = 'block';
         });
     }
     
-    // Initialize range sliders
+    // Initialize everything when the DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded");
+        
+        // Fix modal interaction issues
+        fixModalInteraction();
+        
+        // Initialize range sliders
+        initializeRangeSliders();
+        
+        // Set up form validation
+        setupFormValidation();
+    });
+    
+    // Function to fix modal interaction issues
+    function fixModalInteraction() {
+        console.log("Fixing modal interaction");
+        
+        const createMatchModal = document.getElementById('createMatchModal');
+        if (!createMatchModal) {
+            console.error("Create Match modal not found");
+            return;
+        }
+        
+        // Fix modal backdrop
+        const modalBackdrops = document.querySelectorAll('.modal-backdrop');
+        modalBackdrops.forEach(backdrop => {
+            backdrop.style.zIndex = "1040";
+        });
+        
+        // Fix modal z-index
+        createMatchModal.style.zIndex = "1050";
+        
+        // Fix modal content
+        const modalContent = createMatchModal.querySelector('.modal-content');
+        if (modalContent) {
+            modalContent.style.zIndex = "1055";
+            modalContent.style.position = "relative";
+            modalContent.style.pointerEvents = "auto";
+        }
+        
+        // Fix modal body
+        const modalBody = createMatchModal.querySelector('.modal-body');
+        if (modalBody) {
+            modalBody.style.zIndex = "1055";
+            modalBody.style.position = "relative";
+            modalBody.style.pointerEvents = "auto";
+        }
+        
+        // Fix close button
+        const closeBtn = createMatchModal.querySelector('.btn-close');
+        if (closeBtn) {
+            closeBtn.style.zIndex = "1060";
+            closeBtn.style.position = "relative";
+            closeBtn.style.pointerEvents = "auto";
+            
+            // Add explicit click handler for close button
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log("Close button clicked");
+                
+                if (typeof bootstrap !== "undefined") {
+                    const modalInstance = bootstrap.Modal.getInstance(createMatchModal);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    } else {
+                        // Fallback if bootstrap instance not available
+                        createMatchModal.classList.remove("show");
+                        createMatchModal.style.display = "none";
+                        document.body.classList.remove("modal-open");
+                        
+                        const backdrops = document.querySelectorAll(".modal-backdrop");
+                        backdrops.forEach(backdrop => backdrop.remove());
+                    }
+                } else {
+                    console.error("Bootstrap is not defined");
+                }
+            });
+        }
+        
+        // Fix corner cards
+        const cornerCards = createMatchModal.querySelectorAll('.corner-card');
+        cornerCards.forEach(card => {
+            card.style.zIndex = "1055";
+            card.style.position = "relative";
+            card.style.pointerEvents = "auto";
+            card.style.cursor = "pointer";
+            
+            // Remove existing click handlers
+            card.removeAttribute('onclick');
+            
+            // Add new click handler
+            card.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                const cornerId = this.id;
+                console.log("Corner card clicked:", cornerId);
+                
+                if (cornerId.includes('blue')) {
+                    selectCorner('blue');
+                } else if (cornerId.includes('red')) {
+                    selectCorner('red');
+                }
+            });
+        });
+        
+        // Fix athlete cards
+        const athleteCards = createMatchModal.querySelectorAll('.athlete-data-card');
+        athleteCards.forEach(card => {
+            card.style.zIndex = "1055";
+            card.style.position = "relative";
+            card.style.pointerEvents = "auto";
+            card.style.cursor = "pointer";
+            
+            // Remove existing click handlers
+            card.removeAttribute('onclick');
+            
+            // Add new click handler
+            card.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                console.log("Athlete card clicked:", this.dataset.name);
+                selectAthlete(this);
+            });
+        });
+        
+        // Fix filter buttons
+        const filterButtons = createMatchModal.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.style.zIndex = "1055";
+            button.style.position = "relative";
+            button.style.pointerEvents = "auto";
+            
+            // Remove existing click handlers
+            button.removeAttribute('onclick');
+            
+            // Add new click handlers
+            if (button.classList.contains('reset')) {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    resetFilters();
+                });
+            } else if (button.classList.contains('apply')) {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    applyFilters();
+                });
+            }
+        });
+        
+        // Fix action buttons
+        const actionButtons = createMatchModal.querySelectorAll('.action-btn');
+        actionButtons.forEach(button => {
+            button.style.zIndex = "1055";
+            button.style.position = "relative";
+            button.style.pointerEvents = "auto";
+            
+            if (button.classList.contains('cancel')) {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    if (typeof bootstrap !== "undefined") {
+                        const modalInstance = bootstrap.Modal.getInstance(createMatchModal);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Fix form inputs
+        const formInputs = createMatchModal.querySelectorAll('input, select');
+        formInputs.forEach(input => {
+            input.style.zIndex = "1055";
+            input.style.position = "relative";
+            input.style.pointerEvents = "auto";
+        });
+        
+        // Fix form
+        const form = createMatchModal.querySelector('form');
+        if (form) {
+            form.style.zIndex = "1055";
+            form.style.position = "relative";
+            form.style.pointerEvents = "auto";
+        }
+        
+        // Fix containers
+        const containers = createMatchModal.querySelectorAll('.create-match-container, .match-setup-section, .athletes-section, .corner-cards, .filter-section, .action-buttons, .athletes-container');
+        containers.forEach(container => {
+            container.style.zIndex = "1055";
+            container.style.position = "relative";
+            container.style.pointerEvents = "auto";
+        });
+    }
+    
+    // Function to initialize range sliders
+    function initializeRangeSliders() {
+        console.log("Initializing range sliders");
+        
         // Age range slider
         const ageRange = document.getElementById('age-range');
         const ageValue = document.getElementById('age-value');
         
-        ageRange.addEventListener('input', function() {
-            ageValue.textContent = this.value;
-        });
+        if (ageRange && ageValue) {
+            ageRange.addEventListener('input', function() {
+                ageValue.textContent = this.value;
+            });
+        }
         
         // Weight range slider
         const weightRange = document.getElementById('weight-range');
         const weightValue = document.getElementById('weight-value');
         
-        weightRange.addEventListener('input', function() {
-            weightValue.textContent = this.value;
-        });
+        if (weightRange && weightValue) {
+            weightRange.addEventListener('input', function() {
+                weightValue.textContent = this.value;
+            });
+        }
         
         // Height range slider
         const heightRange = document.getElementById('height-range');
         const heightValue = document.getElementById('height-value');
         
-        heightRange.addEventListener('input', function() {
-            heightValue.textContent = this.value;
-        });
+        if (heightRange && heightValue) {
+            heightRange.addEventListener('input', function() {
+                heightValue.textContent = this.value;
+            });
+        }
+    }
+    
+    // Function to set up form validation
+    function setupFormValidation() {
+        console.log("Setting up form validation");
         
-        // Form validation
         const createMatchForm = document.getElementById('createMatchForm');
-        createMatchForm.addEventListener('submit', function(event) {
-            if (!blueCornerAthlete || !redCornerAthlete) {
-                event.preventDefault();
-                alert('Please select athletes for both Blue and Red corners');
-            }
-        });
+        if (createMatchForm) {
+            createMatchForm.addEventListener('submit', function(event) {
+                if (!blueCornerAthlete || !redCornerAthlete) {
+                    event.preventDefault();
+                    alert('Please select athletes for both Blue and Red corners');
+                }
+            });
+        }
+    }
+    
+    // Add global click handler to debug issues
+    document.addEventListener('click', function(e) {
+        console.log('Element clicked:', e.target);
     });
 </script>
 {% endblock %}

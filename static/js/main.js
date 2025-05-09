@@ -232,12 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.position = "relative"
     card.style.zIndex = "1055"
   })
-})
 
-// Add this code at the end of the DOMContentLoaded event listener
-
-// CRITICAL MODAL FIXES
-document.addEventListener("DOMContentLoaded", () => {
+  // CRITICAL MODAL FIXES
   // Fix modal backdrop issues
   const modalBackdrops = document.querySelectorAll(".modal-backdrop")
   modalBackdrops.forEach((backdrop) => {
@@ -245,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   // Fix modal interaction issues
-  const modals = document.querySelectorAll(".modal")
   modals.forEach((modal) => {
     modal.style.zIndex = "1050"
 
@@ -310,8 +305,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const athlete = window.allAthletes ? window.allAthletes.find((a) => a.id == athleteId) : null
       if (athlete && typeof selectAthlete === "function") {
         selectAthlete(athlete)
-      } else {
-        console.error("selectAthlete is not defined. Make sure the function is available.")
+      } else if (typeof selectAthlete === "function") {
+        // If we can't find the athlete in the array, try to create an object from the dataset
+        const athleteData = {
+          id: this.dataset.id,
+          full_name: this.dataset.name,
+          date_of_birth: this.dataset.dob,
+          weight: this.dataset.weight,
+          height: this.dataset.height,
+          belt_rank: this.dataset.belt,
+          dojang_name: this.dataset.dojang,
+          gender: this.dataset.gender,
+        }
+        selectAthlete(athleteData)
       }
     })
   })
@@ -333,8 +339,51 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (cornerId.includes("red") && typeof selectCorner === "function") {
         selectCorner("red")
       } else {
-        console.error("selectCorner is not defined. Make sure the function is available.")
+        console.error("selectCorner is not defined or corner ID not recognized:", cornerId)
       }
     })
   })
+
+  // Fix for create match modal specifically
+  const createMatchModal = document.getElementById("createMatchModal")
+  if (createMatchModal) {
+    // Ensure the modal is properly initialized
+    if (typeof bootstrap !== "undefined") {
+      const modalInstance = new bootstrap.Modal(createMatchModal)
+
+      // Fix the modal show event
+      createMatchModal.addEventListener("show.bs.modal", function () {
+        // Make sure all elements are clickable
+        const allElements = this.querySelectorAll("*")
+        allElements.forEach((el) => {
+          el.style.pointerEvents = "auto"
+        })
+      })
+    }
+
+    // Fix the athlete selection in the create match modal
+    const athleteDataCards = createMatchModal.querySelectorAll(".athlete-data-card")
+    athleteDataCards.forEach((card) => {
+      card.style.pointerEvents = "auto"
+      card.style.cursor = "pointer"
+      card.style.zIndex = "1060"
+
+      // Add a stronger click handler
+      card.addEventListener(
+        "click",
+        function (e) {
+          e.stopPropagation()
+          e.preventDefault()
+
+          // Try to call the selectAthlete function with this card's data
+          if (typeof selectAthlete === "function") {
+            selectAthlete(this)
+          } else {
+            console.error("selectAthlete function is not defined")
+          }
+        },
+        true,
+      )
+    })
+  }
 })
