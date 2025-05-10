@@ -386,4 +386,160 @@ document.addEventListener("DOMContentLoaded", () => {
       )
     })
   }
+
+  // Enhanced athlete filtering for create match page
+  const filterGender = document.getElementById("filter-gender")
+  const filterSearch = document.getElementById("filter-search")
+  const applyFiltersBtn = document.getElementById("apply-filters")
+  const resetFiltersBtn = document.getElementById("reset-filters")
+
+  if (filterGender || filterSearch || applyFiltersBtn || resetFiltersBtn) {
+    console.log("Enhanced filtering initialized for create match page")
+
+    // Make sure athlete cards are clickable
+    const athleteCards = document.querySelectorAll(".athlete-card, .athlete-data-card")
+    athleteCards.forEach((card) => {
+      card.style.cursor = "pointer"
+      card.addEventListener("click", function (e) {
+        e.stopPropagation()
+
+        // Find the parent container with the data attributes
+        const container = this.closest("[data-id]") || this
+        const athleteId = container.dataset.id
+
+        if (athleteId && typeof selectAthlete === "function") {
+          // Find the athlete in the allAthletes array if it exists
+          if (window.allAthletes) {
+            const athlete = window.allAthletes.find((a) => a.id == athleteId)
+            if (athlete) {
+              selectAthlete(athlete)
+              return
+            }
+          }
+
+          // Otherwise create an athlete object from the dataset
+          const athleteData = {
+            id: athleteId,
+            full_name: container.dataset.name,
+            date_of_birth: container.dataset.dob,
+            weight: container.dataset.weight,
+            height: container.dataset.height,
+            belt_rank: container.dataset.belt,
+            dojang_name: container.dataset.dojang,
+            gender: container.dataset.gender,
+          }
+
+          selectAthlete(athleteData)
+        }
+      })
+    })
+
+    // Set up filter event listeners
+    if (filterGender) {
+      filterGender.addEventListener("change", () => {
+        if (typeof applyFilters === "function") {
+          applyFilters()
+        }
+      })
+    }
+
+    if (filterSearch) {
+      filterSearch.addEventListener("input", () => {
+        if (typeof applyFilters === "function") {
+          setTimeout(() => applyFilters(), 300)
+        }
+      })
+    }
+
+    if (applyFiltersBtn) {
+      applyFiltersBtn.addEventListener("click", () => {
+        if (typeof applyFilters === "function") {
+          applyFilters()
+        }
+      })
+    }
+
+    if (resetFiltersBtn) {
+      resetFiltersBtn.addEventListener("click", () => {
+        if (typeof resetFilters === "function") {
+          resetFilters()
+        }
+      })
+    }
+  }
+
+  // Fix for athlete selection in create match modal
+  const createMatchModal2 = document.getElementById("createMatchModal")
+  if (createMatchModal2) {
+    createMatchModal2.addEventListener("shown.bs.modal", () => {
+      // Make sure all athlete cards are clickable
+      const athleteDataCards = document.querySelectorAll(".athlete-data-card")
+      athleteDataCards.forEach((card) => {
+        card.style.cursor = "pointer"
+        card.style.position = "relative"
+        card.style.zIndex = "1060"
+
+        // Add explicit click handler
+        card.addEventListener(
+          "click",
+          function (e) {
+            e.stopPropagation()
+
+            const athleteId = this.dataset.id
+            if (!athleteId) return
+
+            // Find the athlete in the allAthletes array if it exists
+            if (window.allAthletes) {
+              const athlete = window.allAthletes.find((a) => a.id == athleteId)
+              if (athlete && typeof selectAthlete === "function") {
+                selectAthlete(athlete)
+                return
+              }
+            }
+
+            // Otherwise create an athlete object from the dataset
+            if (typeof selectAthlete === "function") {
+              const athleteData = {
+                id: this.dataset.id,
+                full_name: this.dataset.name,
+                date_of_birth: this.dataset.dob,
+                weight: this.dataset.weight,
+                height: this.dataset.height,
+                belt_rank: this.dataset.belt,
+                dojang_name: this.dataset.dojang,
+                gender: this.dataset.gender,
+              }
+
+              selectAthlete(athleteData)
+            }
+          },
+          true,
+        )
+      })
+
+      // Make corner cards clickable
+      const cornerCards = document.querySelectorAll(".corner-card")
+      cornerCards.forEach((card) => {
+        card.style.cursor = "pointer"
+        card.style.position = "relative"
+        card.style.zIndex = "1060"
+
+        // Add explicit click handler
+        card.addEventListener(
+          "click",
+          function (e) {
+            e.stopPropagation()
+
+            const cornerId = this.id
+            if (cornerId.includes("blue") && typeof selectCorner === "function") {
+              selectCorner("blue")
+            } else if (cornerId.includes("red") && typeof selectCorner === "function") {
+              selectCorner("red")
+            }
+          },
+          true,
+        )
+      })
+    })
+  }
 })

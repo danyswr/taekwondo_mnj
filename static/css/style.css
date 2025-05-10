@@ -322,29 +322,39 @@ h6 {
 
 /* Athlete cards */
 .athlete-card {
-  background-color: var(--card-bg);
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: var(--card-glow);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--card-border);
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 10px;
+  padding: 15px;
+  height: 100%;
   transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  display: block;
+  width: 100%;
 }
 
-.athlete-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+.athlete-card-male {
+  border-left: 4px solid var(--blue-athlete);
 }
 
-.athlete-card.male {
-  border-left: 5px solid var(--blue-athlete);
-  box-shadow: 0 0 15px rgba(76, 201, 240, 0.2);
+.athlete-card-female {
+  border-left: 4px solid var(--pink-athlete);
 }
 
-.athlete-card.female {
-  border-left: 5px solid var(--pink-athlete);
-  box-shadow: 0 0 15px rgba(247, 37, 133, 0.2);
+.athlete-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.athlete-details {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.athlete-details div {
+  margin-bottom: 5px;
 }
 
 /* Timeline design inspired by the achievement timeline */
@@ -769,14 +779,23 @@ label {
   pointer-events: auto !important;
 }
 
+/* Filter section */
 .filter-section {
-  background-color: rgba(40, 40, 40, 0.7);
-  border-radius: 10px;
+  background-color: rgba(80, 80, 80, 0.5);
+  border-radius: 15px;
   padding: 20px;
-  margin: 20px 0;
-  position: relative;
-  z-index: 1055 !important;
-  pointer-events: auto !important;
+  margin-bottom: 20px;
+}
+
+.filter-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.filter-container {
+  margin-bottom: 25px;
 }
 
 .filter-title {
@@ -793,6 +812,45 @@ label {
 
 .filter-group {
   flex: 1;
+}
+
+/* Range slider container */
+.range-slider {
+  position: relative;
+  width: 100%;
+  margin: 15px 0;
+}
+
+.range-slider input[type="range"] {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  outline: none;
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.range-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+.range-slider input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 3;
 }
 
 .range-slider {
@@ -1373,4 +1431,223 @@ label {
 body.modal-open {
   overflow: auto !important;
   padding-right: 0 !important;
+}
+
+/* MODAL BRIGHTNESS FIX - Make the modal content brighter */
+.modal-content {
+  background-color: rgba(60, 58, 58, 0.95) !important; /* Increased opacity for brightness */
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25) !important; /* Enhanced glow */
+}
+
+/* Make modal body brighter */
+.modal-body {
+  background-color: rgba(70, 68, 68, 0.95) !important; /* Lighter background */
+}
+
+/* Make athlete data cards brighter */
+.athlete-data-card {
+  background-color: rgba(90, 88, 88, 0.9) !important; /* Brighter background */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important; /* Enhanced glow */
+}
+
+/* Make athlete data container brighter */
+.athlete-data-container {
+  background-color: rgba(80, 80, 80, 0.7) !important; /* Brighter background */
+}
+
+/* Make filter section brighter */
+.filter-section {
+  background-color: rgba(80, 80, 80, 0.5) !important; /* Brighter background */
+}
+
+/* Add glow effect to match cards */
+.match-card {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.35) !important; /* Enhanced glow */
+}
+
+/* Make form controls brighter */
+.form-control,
+.form-select {
+  background-color: rgba(80, 78, 78, 0.9) !important; /* Brighter background */
+}
+
+/* Make modal header brighter */
+.modal-header {
+  background-color: rgba(70, 68, 68, 0.95) !important; /* Lighter background */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important; /* More visible border */
+}
+
+/* Make modal footer brighter */
+.modal-footer {
+  background-color: rgba(70, 68, 68, 0.95) !important; /* Lighter background */
+  border-top: 1px solid rgba(255, 255, 255, 0.3) !important; /* More visible border */
+}
+
+/* Increase text contrast */
+.modal-title,
+.athlete-data-header,
+.filter-title,
+label {
+  color: rgba(255, 255, 255, 0.95) !important; /* Brighter text */
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5) !important; /* Text shadow for readability */
+}
+
+/* Increase brightness of corner cards */
+.corner-card.blue-corner-card {
+  background-color: #0066ff !important; /* Brighter blue */
+  box-shadow: 0 0 20px rgba(0, 102, 255, 0.5) !important; /* Enhanced glow */
+}
+
+.corner-card.red-corner-card {
+  background-color: #ff4d4d !important; /* Brighter red */
+  box-shadow: 0 0 20px rgba(255, 77, 77, 0.5) !important; /* Enhanced glow */
+}
+
+/* Add these new styles for the filter section and athlete cards */
+
+/* Make sure the athlete container is properly displayed */
+#athletes-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.athlete-card-container {
+  transition: all 0.3s ease;
+}
+
+/* Fix for athlete card containers */
+.athlete-card-container {
+  display: block;
+}
+
+/* Improved range slider styling */
+.range-slider {
+  position: relative;
+  width: 100%;
+  margin: 15px 0;
+}
+
+.range-slider input[type="range"] {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  outline: none;
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.range-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+.range-slider input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+/* Make sure athlete cards are properly displayed */
+.athlete-card {
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 10px;
+  padding: 15px;
+  height: 100%;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  display: block;
+  width: 100%;
+}
+
+/* Ensure athlete container row is properly displayed */
+#athletes-container.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+/* Add these styles to improve modal appearance */
+.modal-backdrop.show {
+  opacity: 0.3 !important; /* Make backdrop more transparent */
+}
+
+.modal-content {
+  background-color: rgba(60, 58, 58, 0.95) !important; /* Brighter background */
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25) !important; /* Enhanced glow */
+}
+
+.modal-body {
+  background-color: rgba(70, 68, 68, 0.95) !important; /* Lighter background */
+}
+
+.modal-header,
+.modal-footer {
+  background-color: rgba(70, 68, 68, 0.95) !important; /* Lighter background */
+  border-color: rgba(255, 255, 255, 0.3) !important; /* More visible border */
+}
+
+/* Improve text contrast in modals */
+.modal-title,
+.modal label,
+.modal h5,
+.modal h4 {
+  color: rgba(255, 255, 255, 0.95) !important; /* Brighter text */
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5) !important; /* Text shadow for readability */
+}
+
+/* Match title dropdown styling */
+#match-title-select {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+#new-title-btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Filter button styling */
+.filter-btn {
+  background-color: rgba(40, 38, 38, 0.7);
+  color: var(--text-color);
+  border: 1px solid var(--card-border);
+  border-radius: 30px;
+  padding: 8px 20px;
+  margin: 0 5px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.filter-btn.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.filter-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Filter container styling */
+.filter-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
 }

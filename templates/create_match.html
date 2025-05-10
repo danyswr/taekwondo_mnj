@@ -11,11 +11,27 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
+                                <label for="match-title" class="form-label">Match Title</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="match-title-select" name="title_id">
+                                        <option value="">Select or create a title</option>
+                                        <!-- Match titles will be loaded here -->
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary" id="new-title-btn">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div id="new-title-input-container" class="mt-2" style="display: none;">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="new-title-input" name="title_name" placeholder="Enter new title">
+                                        <button type="button" class="btn btn-outline-secondary" id="cancel-new-title-btn">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="match-gender-filter" class="form-label">Filter</label>
+                                <label for="match-gender-filter" class="form-label">Gender Filter</label>
                                 <select class="form-select" id="match-gender-filter" name="gender">
                                     <option value="">All</option>
                                     <option value="male">Male</option>
@@ -26,19 +42,11 @@
                         
                         <div class="match-setup">
                             <div class="corner-section">
-                                <div class="corner-box blue-corner">
+                                <div id="blue-corner-card" class="corner-box blue-corner corner-card" onclick="selectCorner('blue')">
                                     <h3>Blue Corner</h3>
+                                    <div class="athlete-corner-info" id="blue-corner-info"></div>
                                 </div>
-                                <div class="mb-3">
-                                    <select class="form-select" id="blue_corner_id" name="blue_corner_id" required>
-                                        <option value="">Select Athlete</option>
-                                        {% for athlete in athletes %}
-                                        {% if athlete.gender == 'male' %}
-                                        <option value="{{ athlete.id }}">{{ athlete.full_name }}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                                <input type="hidden" id="blue_corner_id" name="blue_corner_id" required>
                             </div>
                             
                             <div class="vs-section">
@@ -46,52 +54,87 @@
                             </div>
                             
                             <div class="corner-section">
-                                <div class="corner-box red-corner">
+                                <div id="red-corner-card" class="corner-box red-corner corner-card" onclick="selectCorner('red')">
                                     <h3>Red Corner</h3>
+                                    <div class="athlete-corner-info" id="red-corner-info"></div>
                                 </div>
-                                <div class="mb-3">
-                                    <select class="form-select" id="red_corner_id" name="red_corner_id" required>
-                                        <option value="">Select Athlete</option>
-                                        {% for athlete in athletes %}
-                                        {% if athlete.gender == 'male' %}
-                                        <option value="{{ athlete.id }}">{{ athlete.full_name }}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                                <input type="hidden" id="red_corner_id" name="red_corner_id" required>
                             </div>
                         </div>
                         
                         <div class="match-actions mt-4">
-                            <button type="submit" class="btn btn-primary">Create Match</button>
+                            <button type="submit" id="create-match-btn" class="btn btn-primary" disabled>Create Match</button>
                             <a href="{{ url_for('matches') }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>
                 </div>
             </form>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="athlete-list-section">
-                        <h4 class="mb-3 text-center">Data Atlet Male</h4>
-                        {% for athlete in athletes %}
-                        {% if athlete.gender == 'male' %}
-                        <div class="athlete-card-male" onclick="selectAthlete('{{ athlete.id }}', 'male')">
-                            {{ athlete.full_name }}
+            <!-- Improved Filter Section -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Filter Athletes</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="filter-gender" class="form-label">Gender</label>
+                                <select class="form-select" id="filter-gender">
+                                    <option value="">All</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
                         </div>
-                        {% endif %}
-                        {% endfor %}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="filter-search" class="form-label">Search</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="filter-search" placeholder="Search by name or dojang">
+                                    <button type="button" class="btn btn-primary" id="apply-filters">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end mt-2">
+                            <button type="button" id="reset-filters" class="btn btn-outline-secondary">
+                                <i class="fas fa-undo me-1"></i> Reset Filters
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="athlete-list-section">
-                        <h4 class="mb-3 text-center">Data Atlet Female</h4>
-                        {% for athlete in athletes %}
-                        {% if athlete.gender == 'female' %}
-                        <div class="athlete-card-female" onclick="selectAthlete('{{ athlete.id }}', 'female')">
-                            {{ athlete.full_name }}
+            </div>
+            
+            <!-- Athletes List Section -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3 text-center">Available Athletes</h4>
+                    <div id="athletes-container" class="row">
+                        {% for athlete in athletes|sort(attribute='full_name') %}
+                        <div class="col-md-4 mb-3 athlete-card-container" 
+                             data-id="{{ athlete.id }}" 
+                             data-name="{{ athlete.full_name }}" 
+                             data-gender="{{ athlete.gender }}" 
+                             data-dob="{{ athlete.date_of_birth }}" 
+                             data-weight="{{ athlete.weight }}" 
+                             data-height="{{ athlete.height }}" 
+                             data-belt="{{ athlete.belt_rank }}" 
+                             data-dojang="{{ athlete.dojang_name }}">
+                            <div class="athlete-card">
+                                <h5 class="athlete-name">{{ athlete.full_name }}</h5>
+                                <div class="athlete-details">
+                                    <div><strong>Gender:</strong> {{ athlete.gender|capitalize }}</div>
+                                    <div><strong>Age:</strong> 
+                                        {% set age = ((now - athlete.date_of_birth|to_datetime).days / 365.25)|int %}
+                                        {{ age }} years
+                                    </div>
+                                    <div><strong>Belt:</strong> {{ athlete.belt_rank }}</div>
+                                    <div><strong>Weight:</strong> {{ athlete.weight }} kg</div>
+                                    <div><strong>Height:</strong> {{ athlete.height }} cm</div>
+                                    <div><strong>Dojang:</strong> {{ athlete.dojang_name }}</div>
+                                </div>
+                            </div>
                         </div>
-                        {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -99,95 +142,815 @@
         </div>
     </div>
 </div>
+
+<!-- Athlete Selection Modal -->
+<div class="modal fade" id="athleteSelectionModal" tabindex="-1" aria-labelledby="athleteSelectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="athleteSelectionModalLabel">Select Athlete for <span id="selected-corner-text"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="modal-search" placeholder="Search athlete by name">
+                </div>
+                <div id="modal-athletes-container" class="row">
+                    <!-- Athletes will be loaded here dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-<script>
-    function selectAthlete(id, gender) {
-        // Get the currently selected corner (blue or red)
-        const blueCorner = document.getElementById('blue_corner_id');
-        const redCorner = document.getElementById('red_corner_id');
-        
-        // If blue corner is empty, fill it first
-        if (!blueCorner.value) {
-            blueCorner.value = id;
-        } else if (!redCorner.value) {
-            // If red corner is empty, fill it next
-            redCorner.value = id;
-        } else {
-            // If both are filled, replace the blue corner
-            blueCorner.value = id;
-        }
-        
-        // Update the gender filter to match the selected athlete
-        const genderFilter = document.getElementById('match-gender-filter');
-        genderFilter.value = gender;
-        
-        // Trigger the change event to update the dropdowns
-        const event = new Event('change');
-        genderFilter.dispatchEvent(event);
+<style>
+    /* Styles for selected athletes */
+    .selected-blue {
+        border: 3px solid #0d6efd !important;
+        box-shadow: 0 0 15px rgba(13, 110, 253, 0.5) !important;
     }
     
-    document.addEventListener('DOMContentLoaded', function() {
-        // Filter athletes when gender filter changes
-        const matchGenderFilter = document.getElementById('match-gender-filter');
-        if (matchGenderFilter) {
-            matchGenderFilter.addEventListener('change', function() {
-                const gender = this.value;
-                
-                // Show/hide athlete cards based on gender
-                const maleCards = document.querySelectorAll('.athlete-card-male');
-                const femaleCards = document.querySelectorAll('.athlete-card-female');
-                
-                if (gender === 'male') {
-                    maleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
-                    femaleCards.forEach(card => card.parentElement.parentElement.style.display = 'none');
-                } else if (gender === 'female') {
-                    maleCards.forEach(card => card.parentElement.parentElement.style.display = 'none');
-                    femaleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
-                } else {
-                    maleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
-                    femaleCards.forEach(card => card.parentElement.parentElement.style.display = 'block');
-                }
-                
-                // Update athlete options in dropdowns
-                fetch(`/api/athletes/filter?gender=${gender}`)
-                    .then(response => response.json())
-                    .then(athletes => {
-                        updateAthleteOptions('blue_corner_id', athletes);
-                        updateAthleteOptions('red_corner_id', athletes);
-                    })
-                    .catch(error => console.error('Error fetching athletes:', error));
-            });
+    .selected-red {
+        border: 3px solid #dc3545 !important;
+        box-shadow: 0 0 15px rgba(220, 53, 69, 0.5) !important;
+    }
+    
+    /* Improve range slider appearance */
+    .range-slider {
+        position: relative;
+        width: 100%;
+    }
+    
+    /* Make athlete cards clickable */
+    .athlete-card {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-radius: 8px;
+        padding: 12px;
+        background-color: rgba(30, 30, 30, 0.7);
+    }
+    
+    .athlete-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Hide filtered out athletes */
+    .athlete-card-container.filtered-out {
+        display: none;
+    }
+    
+    /* Corner card with athlete info */
+    .corner-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .blue-corner {
+        background-color: rgba(13, 110, 253, 0.7);
+        color: white;
+    }
+    
+    .red-corner {
+        background-color: rgba(220, 53, 69, 0.7);
+        color: white;
+    }
+    
+    .corner-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+    }
+    
+    .corner-card-selected {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(255, 255, 255, 0.4);
+    }
+    
+    .athlete-corner-info {
+        margin-top: 10px;
+        text-align: left;
+        width: 100%;
+    }
+    
+    .athlete-corner-name {
+        font-weight: bold;
+        font-size: 1.1em;
+        margin-bottom: 5px;
+    }
+    
+    .athlete-corner-info-item {
+        margin-bottom: 3px;
+        font-size: 0.9em;
+    }
+    
+    .vs-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+    }
+    
+    /* Modal athlete cards */
+    .modal-athlete-card {
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: rgba(50, 50, 50, 0.8);
+        transition: all 0.2s ease;
+    }
+    
+    .modal-athlete-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Modal styling improvements */
+    .modal-content {
+        background-color: rgba(60, 58, 58, 0.95) !important;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.25) !important;
+    }
+    
+    .modal-backdrop.show {
+        opacity: 0.3 !important; /* Make backdrop more transparent */
+    }
+</style>
+<script>
+// Store all athletes data for filtering
+let allAthletes = [];
+let selectedBlueCorner = null;
+let selectedRedCorner = null;
+let selectedCorner = null;
+let modalAthletes = [];
+let matchTitles = [];
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, initializing athlete filtering...");
+    
+    // Fetch all athletes from the API
+    fetchAllAthletes();
+    
+    // Fetch all match titles
+    fetchMatchTitles();
+    
+    // Set up filter event listeners
+    setupFilterEventListeners();
+    
+    // Set up corner card click handlers
+    setupCornerCards();
+    
+    // Set up athlete selection modal
+    setupAthleteSelectionModal();
+    
+    // Set up match title functionality
+    setupMatchTitleHandling();
+    
+    // Apply initial filters if URL has parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('gender')) {
+        const gender = urlParams.get('gender');
+        document.getElementById('filter-gender').value = gender;
+        document.getElementById('match-gender-filter').value = gender;
+        applyFilters();
+    }
+});
+
+// Fetch all match titles
+function fetchMatchTitles() {
+    fetch('/api/match_titles')
+        .then(response => response.json())
+        .then(titles => {
+            matchTitles = titles;
+            populateMatchTitleDropdown(titles);
+        })
+        .catch(error => console.error('Error fetching match titles:', error));
+}
+
+// Populate match title dropdown
+function populateMatchTitleDropdown(titles) {
+    const titleSelect = document.getElementById('match-title-select');
+    if (!titleSelect) return;
+    
+    // Clear existing options except the first one
+    while (titleSelect.options.length > 1) {
+        titleSelect.remove(1);
+    }
+    
+    // Add titles to dropdown
+    titles.forEach(title => {
+        const option = document.createElement('option');
+        option.value = title.id;
+        option.textContent = title.name;
+        titleSelect.appendChild(option);
+    });
+}
+
+// Set up match title handling
+function setupMatchTitleHandling() {
+    const newTitleBtn = document.getElementById('new-title-btn');
+    const cancelNewTitleBtn = document.getElementById('cancel-new-title-btn');
+    const newTitleInputContainer = document.getElementById('new-title-input-container');
+    const newTitleInput = document.getElementById('new-title-input');
+    const titleSelect = document.getElementById('match-title-select');
+    
+    if (newTitleBtn) {
+        newTitleBtn.addEventListener('click', function() {
+            newTitleInputContainer.style.display = 'block';
+            titleSelect.disabled = true;
+            newTitleInput.focus();
+        });
+    }
+    
+    if (cancelNewTitleBtn) {
+        cancelNewTitleBtn.addEventListener('click', function() {
+            newTitleInputContainer.style.display = 'none';
+            titleSelect.disabled = false;
+            newTitleInput.value = '';
+        });
+    }
+    
+    if (newTitleInput) {
+        newTitleInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                addNewMatchTitle(this.value);
+            }
+        });
+    }
+}
+
+// Add new match title
+function addNewMatchTitle(titleName) {
+    if (!titleName.trim()) return;
+    
+    const formData = new FormData();
+    formData.append('name', titleName);
+    
+    fetch('/api/match_titles/add', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add new title to the dropdown
+            const titleSelect = document.getElementById('match-title-select');
+            const option = document.createElement('option');
+            option.value = data.id;
+            option.textContent = data.name;
+            titleSelect.appendChild(option);
+            
+            // Select the new title
+            titleSelect.value = data.id;
+            
+            // Hide the input container
+            document.getElementById('new-title-input-container').style.display = 'none';
+            document.getElementById('new-title-input').value = '';
+            titleSelect.disabled = false;
+            
+            // Add to matchTitles array
+            matchTitles.push(data);
+        }
+    })
+    .catch(error => console.error('Error adding match title:', error));
+}
+
+// Fetch all athletes from the API
+function fetchAllAthletes() {
+    fetch('/api/athletes/all')
+        .then(response => response.json())
+        .then(athletes => {
+            processAthletes(athletes);
+            renderAthleteCards();
+        })
+        .catch(error => console.error('Error fetching athletes:', error));
+}
+
+// Process athletes data
+function processAthletes(athletes) {
+    allAthletes = athletes.map(athlete => {
+        // Calculate age from date of birth
+        const dob = new Date(athlete.date_of_birth);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
         }
         
-        // Function to update athlete dropdown options
-        function updateAthleteOptions(selectId, athletes) {
-            const select = document.getElementById(selectId);
-            if (!select) return;
+        return {
+            id: athlete.id,
+            name: athlete.full_name,
+            gender: athlete.gender,
+            dob: athlete.date_of_birth,
+            age: age,
+            weight: parseFloat(athlete.weight),
+            height: parseFloat(athlete.height),
+            belt: athlete.belt_rank,
+            dojang: athlete.dojang_name
+        };
+    });
+    
+    // Sort athletes alphabetically by name
+    allAthletes.sort((a, b) => a.name.localeCompare(b.name));
+    
+    console.log(`Processed ${allAthletes.length} athletes`);
+}
+
+// Render athlete cards in the container
+function renderAthleteCards() {
+    const athletesContainer = document.getElementById('athletes-container');
+    if (!athletesContainer) return;
+    
+    // Clear the container
+    athletesContainer.innerHTML = '';
+    
+    // Create and append athlete cards
+    allAthletes.forEach(athlete => {
+        const athleteCard = createAthleteCard(athlete);
+        athletesContainer.appendChild(athleteCard);
+    });
+    
+    // Add click event to all athlete cards
+    document.querySelectorAll('.athlete-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const container = this.closest('.athlete-card-container');
+            const athleteId = container.dataset.id;
+            const athlete = allAthletes.find(a => a.id == athleteId);
+            if (athlete) {
+                selectAthlete(athlete);
+            }
+        });
+    });
+}
+
+// Create an athlete card element
+function createAthleteCard(athlete) {
+    const container = document.createElement('div');
+    container.className = 'col-md-4 mb-3 athlete-card-container';
+    container.dataset.id = athlete.id;
+    container.dataset.name = athlete.name;
+    container.dataset.gender = athlete.gender;
+    container.dataset.dob = athlete.dob;
+    container.dataset.weight = athlete.weight;
+    container.dataset.height = athlete.height;
+    container.dataset.belt = athlete.belt;
+    container.dataset.dojang = athlete.dojang;
+    
+    container.innerHTML = `
+        <div class="athlete-card">
+            <h5 class="athlete-name">${athlete.name}</h5>
+            <div class="athlete-details">
+                <div><strong>Gender:</strong> ${athlete.gender.charAt(0).toUpperCase() + athlete.gender.slice(1)}</div>
+                <div><strong>Age:</strong> ${athlete.age} years</div>
+                <div><strong>Belt:</strong> ${athlete.belt}</div>
+                <div><strong>Weight:</strong> ${athlete.weight} kg</div>
+                <div><strong>Height:</strong> ${athlete.height} cm</div>
+                <div><strong>Dojang:</strong> ${athlete.dojang}</div>
+            </div>
+        </div>
+    `;
+    
+    return container;
+}
+
+// Set up filter event listeners
+function setupFilterEventListeners() {
+    console.log("Setting up filter event listeners");
+    
+    // Gender filter dropdown
+    const genderFilter = document.getElementById('filter-gender');
+    if (genderFilter) {
+        genderFilter.addEventListener('change', function() {
+            console.log("Gender filter changed to:", this.value);
             
-            // Save current selection
-            const currentValue = select.value;
+            // Also update the match gender filter
+            const matchGenderFilter = document.getElementById('match-gender-filter');
+            if (matchGenderFilter) {
+                matchGenderFilter.value = this.value;
+            }
             
-            // Clear existing options
-            select.innerHTML = '<option value="">Select Athlete</option>';
+            // Apply filters immediately
+            applyFilters();
+        });
+    }
+    
+    // Match gender filter
+    const matchGenderFilter = document.getElementById('match-gender-filter');
+    if (matchGenderFilter) {
+        matchGenderFilter.addEventListener('change', function() {
+            const gender = this.value;
+            console.log("Match gender filter changed to:", gender);
             
-            // Add new options
-            athletes.forEach(athlete => {
-                const option = document.createElement('option');
-                option.value = athlete.id;
-                option.textContent = athlete.full_name;
-                select.appendChild(option);
-            });
+            // Also update the filter gender to match
+            const filterGender = document.getElementById('filter-gender');
+            if (filterGender) {
+                filterGender.value = gender;
+            }
             
-            // Restore selection if it exists in new options
-            if (currentValue) {
-                const exists = Array.from(select.options).some(option => option.value === currentValue);
-                if (exists) {
-                    select.value = currentValue;
-                }
+            // Apply filters immediately
+            applyFilters();
+        });
+    }
+    
+    // Search filter
+    const filterSearch = document.getElementById('filter-search');
+    if (filterSearch) {
+        filterSearch.addEventListener('input', function() {
+            // Apply filters after a short delay
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                applyFilters();
+            }, 300);
+        });
+    }
+    
+    // Apply filters button
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', function() {
+            console.log("Apply filters button clicked");
+            applyFilters();
+        });
+    }
+    
+    // Reset filters button
+    const resetFiltersBtn = document.getElementById('reset-filters');
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', function() {
+            console.log("Reset filters button clicked");
+            resetFilters();
+        });
+    }
+}
+
+// Set up corner cards
+function setupCornerCards() {
+    const blueCornerCard = document.getElementById('blue-corner-card');
+    const redCornerCard = document.getElementById('red-corner-card');
+    
+    if (blueCornerCard) {
+        blueCornerCard.addEventListener('click', function() {
+            selectCorner('blue');
+            openAthleteSelectionModal('Blue Corner');
+        });
+    }
+    
+    if (redCornerCard) {
+        redCornerCard.addEventListener('click', function() {
+            selectCorner('red');
+            openAthleteSelectionModal('Red Corner');
+        });
+    }
+}
+
+// Set up athlete selection modal
+function setupAthleteSelectionModal() {
+    const modal = document.getElementById('athleteSelectionModal');
+    if (!modal) return;
+    
+    // Set up search in modal
+    const modalSearch = document.getElementById('modal-search');
+    if (modalSearch) {
+        modalSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filterModalAthletes(searchTerm);
+        });
+    }
+    
+    // Reset modal when it's hidden
+    modal.addEventListener('hidden.bs.modal', function() {
+        if (modalSearch) modalSearch.value = '';
+        const modalAthletesContainer = document.getElementById('modal-athletes-container');
+        if (modalAthletesContainer) modalAthletesContainer.innerHTML = '';
+    });
+}
+
+// Open athlete selection modal
+function openAthleteSelectionModal(cornerText) {
+    const modal = document.getElementById('athleteSelectionModal');
+    const modalTitle = document.getElementById('selected-corner-text');
+    const modalAthletesContainer = document.getElementById('modal-athletes-container');
+    
+    if (!modal || !modalTitle || !modalAthletesContainer) return;
+    
+    // Set the modal title
+    modalTitle.textContent = cornerText;
+    
+    // Filter athletes based on current gender filter
+    const genderFilter = document.getElementById('filter-gender').value;
+    modalAthletes = allAthletes.filter(athlete => {
+        if (genderFilter && athlete.gender !== genderFilter) {
+            return false;
+        }
+        return true;
+    });
+    
+    // Render athletes in the modal
+    renderModalAthletes(modalAthletes);
+    
+    // Show the modal
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+}
+
+// Render athletes in the modal
+function renderModalAthletes(athletes) {
+    const container = document.getElementById('modal-athletes-container');
+    if (!container) return;
+    
+    // Clear the container
+    container.innerHTML = '';
+    
+    // Create and append athlete cards
+    athletes.forEach(athlete => {
+        const card = document.createElement('div');
+        card.className = 'col-md-4';
+        card.innerHTML = `
+            <div class="modal-athlete-card" data-id="${athlete.id}">
+                <h5>${athlete.name}</h5>
+                <div><strong>Gender:</strong> ${athlete.gender.charAt(0).toUpperCase() + athlete.gender.slice(1)}</div>
+                <div><strong>Age:</strong> ${athlete.age} years</div>
+                <div><strong>Belt:</strong> ${athlete.belt}</div>
+                <div><strong>Weight:</strong> ${athlete.weight} kg</div>
+                <div><strong>Height:</strong> ${athlete.height} cm</div>
+                <div><strong>Dojang:</strong> ${athlete.dojang}</div>
+            </div>
+        `;
+        
+        container.appendChild(card);
+        
+        // Add click event to the card
+        card.querySelector('.modal-athlete-card').addEventListener('click', function() {
+            const athleteId = this.dataset.id;
+            const athlete = allAthletes.find(a => a.id == athleteId);
+            if (athlete) {
+                selectAthlete(athlete);
+                
+                // Close the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('athleteSelectionModal'));
+                if (modal) modal.hide();
+            }
+        });
+    });
+    
+    // Show message if no athletes
+    if (athletes.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center"><p>No athletes match the current filters.</p></div>';
+    }
+}
+
+// Filter athletes in the modal
+function filterModalAthletes(searchTerm) {
+    const genderFilter = document.getElementById('filter-gender').value;
+    
+    const filteredAthletes = allAthletes.filter(athlete => {
+        // Gender filter
+        if (genderFilter && athlete.gender !== genderFilter) {
+            return false;
+        }
+        
+        // Search filter
+        if (searchTerm && !athlete.name.toLowerCase().includes(searchTerm) && 
+            !athlete.dojang.toLowerCase().includes(searchTerm)) {
+            return false;
+        }
+        
+        return true;
+    });
+    
+    renderModalAthletes(filteredAthletes);
+}
+
+// Select a corner (blue or red)
+function selectCorner(corner) {
+    selectedCorner = corner;
+    
+    // Update UI to show which corner is selected
+    const blueCornerCard = document.getElementById('blue-corner-card');
+    const redCornerCard = document.getElementById('red-corner-card');
+    
+    if (!blueCornerCard || !redCornerCard) return;
+    
+    blueCornerCard.classList.remove('corner-card-selected');
+    redCornerCard.classList.remove('corner-card-selected');
+    
+    if (corner === 'blue') {
+        blueCornerCard.classList.add('corner-card-selected');
+    } else {
+        redCornerCard.classList.add('corner-card-selected');
+    }
+}
+
+// Select an athlete for the current corner
+function selectAthlete(athlete) {
+    if (!athlete) {
+        console.error("No athlete data provided to selectAthlete function");
+        return;
+    }
+    
+    if (!selectedCorner) {
+        // If no corner is selected, default to blue
+        selectCorner('blue');
+    }
+    
+    console.log(`Selecting athlete for ${selectedCorner} corner:`, athlete);
+    
+    // Create HTML for athlete info
+    const athleteDetails = `
+        <div class="athlete-corner-name">${athlete.name}</div>
+        <div class="athlete-corner-info-item"><strong>Age:</strong> ${athlete.age} years</div>
+        <div class="athlete-corner-info-item"><strong>Belt:</strong> ${athlete.belt}</div>
+        <div class="athlete-corner-info-item"><strong>Weight:</strong> ${athlete.weight} kg</div>
+        <div class="athlete-corner-info-item"><strong>Height:</strong> ${athlete.height} cm</div>
+        <div class="athlete-corner-info-item"><strong>Dojang:</strong> ${athlete.dojang}</div>
+    `;
+    
+    if (selectedCorner === 'blue') {
+        selectedBlueCorner = athlete;
+        
+        // Update hidden input
+        const blueCornerIdInput = document.getElementById('blue_corner_id');
+        if (blueCornerIdInput) blueCornerIdInput.value = athlete.id;
+        
+        // Update corner card
+        const blueCornerInfo = document.getElementById('blue-corner-info');
+        if (blueCornerInfo) blueCornerInfo.innerHTML = athleteDetails;
+        
+        const blueCornerCard = document.getElementById('blue-corner-card');
+        if (blueCornerCard) {
+            blueCornerCard.querySelector('h3').textContent = athlete.name;
+        }
+    } else {
+        selectedRedCorner = athlete;
+        
+        // Update hidden input
+        const redCornerIdInput = document.getElementById('red_corner_id');
+        if (redCornerIdInput) redCornerIdInput.value = athlete.id;
+        
+        // Update corner card
+        const redCornerInfo = document.getElementById('red-corner-info');
+        if (redCornerInfo) redCornerInfo.innerHTML = athleteDetails;
+        
+        const redCornerCard = document.getElementById('red-corner-card');
+        if (redCornerCard) {
+            redCornerCard.querySelector('h3').textContent = athlete.name;
+        }
+    }
+    
+    // Highlight selected athletes in the list
+    highlightSelectedAthletes();
+    
+    // Enable create match button if both corners have athletes
+    const createMatchBtn = document.getElementById('create-match-btn');
+    if (createMatchBtn) {
+        createMatchBtn.disabled = !(selectedBlueCorner && selectedRedCorner);
+    }
+    
+    // Check if both athletes have the same gender and update the gender filter
+    if (selectedBlueCorner && selectedRedCorner) {
+        if (selectedBlueCorner.gender === selectedRedCorner.gender) {
+            // Update match gender filter
+            const matchGenderFilter = document.getElementById('match-gender-filter');
+            if (matchGenderFilter) {
+                matchGenderFilter.value = selectedBlueCorner.gender;
+            }
+            
+            // Update filter gender
+            const filterGender = document.getElementById('filter-gender');
+            if (filterGender) {
+                filterGender.value = selectedBlueCorner.gender;
             }
         }
+    }
+}
+
+// Highlight selected athletes in the list
+function highlightSelectedAthletes() {
+    // Remove all highlights first
+    document.querySelectorAll('.athlete-card').forEach(card => {
+        card.classList.remove('selected-blue', 'selected-red');
     });
+    
+    // Add highlights to selected athletes
+    if (selectedBlueCorner) {
+        const blueAthleteCard = document.querySelector(`.athlete-card-container[data-id="${selectedBlueCorner.id}"] .athlete-card`);
+        if (blueAthleteCard) {
+            blueAthleteCard.classList.add('selected-blue');
+        }
+    }
+    
+    if (selectedRedCorner) {
+        const redAthleteCard = document.querySelector(`.athlete-card-container[data-id="${selectedRedCorner.id}"] .athlete-card`);
+        if (redAthleteCard) {
+            redAthleteCard.classList.add('selected-red');
+        }
+    }
+}
+
+// Apply all filters
+function applyFilters() {
+    console.log("Applying filters to athletes");
+    
+    // Get filter values
+    const genderFilter = document.getElementById('filter-gender').value;
+    const searchFilter = document.getElementById('filter-search').value.toLowerCase();
+    
+    console.log("Filter criteria:", {
+        gender: genderFilter,
+        search: searchFilter
+    });
+    
+    // Apply filters to each athlete card
+    const athleteContainers = document.querySelectorAll('.athlete-card-container');
+    let visibleCount = 0;
+    
+    athleteContainers.forEach(container => {
+        const athleteId = container.dataset.id;
+        const athlete = allAthletes.find(a => a.id == athleteId);
+        
+        if (!athlete) return;
+        
+        let visible = true;
+        
+        // Gender filter
+        if (genderFilter && athlete.gender !== genderFilter) {
+            visible = false;
+        }
+        
+        // Search filter (name or dojang)
+        if (searchFilter && !athlete.name.toLowerCase().includes(searchFilter) && 
+            !athlete.dojang.toLowerCase().includes(searchFilter)) {
+            visible = false;
+        }
+        
+        // Show or hide the athlete card
+        if (visible) {
+            container.classList.remove('filtered-out');
+            visibleCount++;
+        } else {
+            container.classList.add('filtered-out');
+        }
+    });
+    
+    console.log(`Filter results: ${visibleCount} visible athletes`);
+    
+    // Show message if no results
+    const athletesContainer = document.getElementById('athletes-container');
+    if (visibleCount === 0 && athletesContainer) {
+        // Check if no-results message already exists
+        if (!document.getElementById('no-results-message')) {
+            const noResultsMsg = document.createElement('div');
+            noResultsMsg.id = 'no-results-message';
+            noResultsMsg.className = 'col-12 text-center mt-4';
+            noResultsMsg.innerHTML = '<p>No athletes match your filter criteria. Please adjust your filters.</p>';
+            athletesContainer.appendChild(noResultsMsg);
+        }
+    } else {
+        // Remove no-results message if it exists
+        const noResultsMsg = document.getElementById('no-results-message');
+        if (noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    }
+}
+
+// Reset all filters
+function resetFilters() {
+    console.log("Resetting all filters");
+    
+    // Reset gender filter
+    const genderFilter = document.getElementById('filter-gender');
+    if (genderFilter) genderFilter.value = '';
+    
+    // Reset search filter
+    const searchFilter = document.getElementById('filter-search');
+    if (searchFilter) searchFilter.value = '';
+    
+    // Show all athletes
+    document.querySelectorAll('.athlete-card-container').forEach(container => {
+        container.classList.remove('filtered-out');
+    });
+    
+    // Remove no-results message if it exists
+    const noResultsMsg = document.getElementById('no-results-message');
+    if (noResultsMsg) {
+        noResultsMsg.remove();
+    }
+    
+    console.log("All filters reset, showing all athletes");
+}
 </script>
 {% endblock %}
