@@ -212,8 +212,8 @@ def matches():
     if title_filter:
         query += f" AND m.title_id = {title_filter}"
     
-    # Order by most recent matches first
-    query += " ORDER BY m.created_at DESC"
+    # Order by result status (draws first) and then by creation date
+    query += " ORDER BY CASE WHEN m.result = 'draw' THEN 0 ELSE 1 END, m.created_at DESC"
     
     cur.execute(query)
     matches = cur.fetchall()
