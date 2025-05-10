@@ -180,10 +180,24 @@ def matches():
         SELECT m.*, 
                blue.full_name as blue_name, 
                red.full_name as red_name,
+               blue.weight as blue_weight,
+               red.weight as red_weight,
+               blue.height as blue_height,
+               red.height as red_height,
+               blue.date_of_birth as blue_dob,
+               red.date_of_birth as red_dob,
+               blue_belt.name as blue_belt,
+               red_belt.name as red_belt,
+               blue_dojang.name as blue_dojang,
+               red_dojang.name as red_dojang,
                t.name as title_name
         FROM matches m
         LEFT JOIN athletes blue ON m.blue_corner_id = blue.id
         LEFT JOIN athletes red ON m.red_corner_id = red.id
+        LEFT JOIN belt_ranks blue_belt ON blue.belt_rank_id = blue_belt.id
+        LEFT JOIN belt_ranks red_belt ON red.belt_rank_id = red_belt.id
+        LEFT JOIN dojangs blue_dojang ON blue.dojang_id = blue_dojang.id
+        LEFT JOIN dojangs red_dojang ON red.dojang_id = red_dojang.id
         LEFT JOIN match_titles t ON m.title_id = t.id
         WHERE 1=1
     """
@@ -210,6 +224,18 @@ def matches():
     
     # Add current date for age calculation in template
     now = datetime.now()
+    
+    # Calculate ages for athletes
+    for match in matches:
+        if match['blue_dob']:
+            blue_dob = datetime.strptime(match['blue_dob'].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            blue_age = now.year - blue_dob.year - ((now.month, now.day) < (blue_dob.month, blue_dob.day))
+            match['blue_age'] = blue_age
+        
+        if match['red_dob']:
+            red_dob = datetime.strptime(match['red_dob'].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            red_age = now.year - red_dob.year - ((now.month, now.day) < (red_dob.month, red_dob.day))
+            match['red_age'] = red_age
     
     cur.close()
     
@@ -372,30 +398,59 @@ def match_detail(id):
 
 @app.route('/matches/update_result/<int:id>', methods=['POST'])
 def update_match_result(id):
-    result = request.form['result']
-    
-    # Validate result
-    if result not in ['blue', 'red', 'draw']:
-        flash('Invalid result!', 'danger')
-        return redirect(url_for('match_detail', id=id))
-    
-    cur = mysql.connection.cursor()
-    
     try:
-        cur.execute("""
-            UPDATE matches 
-            SET result = %s, updated_at = NOW()
-            WHERE id = %s
-        """, (result, id))
+        # Get the result from the form data
+        result = request.form.get('result')
         
-        mysql.connection.commit()
-        flash('Match result updated!', 'success')
+        # Validate result
+        if result not in ['blue', 'red', 'draw']:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': 'Invalid result!'})
+            flash('Invalid result!', 'danger')
+            return redirect(url_for('match_detail', id=id))
+        
+        cur = mysql.connection.cursor()
+        
+        try:
+            # Update the match result in the database
+            cur.execute("""
+                UPDATE matches 
+                SET result = %s, updated_at = NOW()
+                WHERE id = %s
+            """, (result, id))
+            
+            mysql.connection.commit()
+            
+            # Return JSON response for AJAX requests
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': True, 'message': 'Match result updated successfully!'})
+            
+            flash('Match result updated successfully!', 'success')
+        except Exception as e:
+            # Handle database errors
+            mysql.connection.rollback()
+            error_message = f'Error updating match result: {str(e)}'
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_message})
+            
+            flash(error_message, 'danger')
+        finally:
+            cur.close()
+        
+        # Only redirect for non-AJAX requests
+        if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+            return redirect(url_for('match_detail', id=id))
+        else:
+            return jsonify({'success': True, 'message': 'Match result updated successfully!'})
     except Exception as e:
-        flash(f'Error updating match result: {str(e)}', 'danger')
-    finally:
-        cur.close()
-    
-    return redirect(url_for('match_detail', id=id))
+        # Handle any unexpected errors
+        error_message = f'Unexpected error: {str(e)}'
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': error_message})
+        
+        flash(error_message, 'danger')
+        return redirect(url_for('matches'))
 
 @app.route('/matches/delete/<int:id>', methods=['POST'])
 def delete_match(id):

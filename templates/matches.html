@@ -64,22 +64,30 @@
             </div>
         </div>
         
+        <!-- Update the match card structure to ensure proper positioning of elements -->
+        <!-- Replace the existing match card structure with this improved version -->
+
         <!-- Matches List -->
         <div class="row">
             {% for match in matches %}
-            <div class="col-md-6">
-                <div class="match-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="col-md-6 mb-4">
+                <div class="match-card" data-match-id="{{ match.id }}">
+                    <div class="d-flex justify-content-between align-items-center mb-3 position-relative">
                         <h4>{{ match.title_name }}</h4>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="dropdown">
+                        <div class="dropdown position-static">
+                            <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item" href="{{ url_for('match_detail', id=match.id) }}">
                                         <i class="fas fa-eye me-2"></i>View Details
                                     </a>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item reset-result-btn" data-match-id="{{ match.id }}">
+                                        <i class="fas fa-undo me-2"></i>Reset Result
+                                    </button>
                                 </li>
                                 <li>
                                     <form action="{{ url_for('delete_match', id=match.id) }}" method="POST">
@@ -92,39 +100,79 @@
                         </div>
                     </div>
                     
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-5">
-                            <div class="corner-box blue-corner">
-                                {{ match.blue_name }}
-                            </div>
-                            <form action="{{ url_for('update_match_result', id=match.id) }}" method="POST">
-                                <input type="hidden" name="result" value="blue">
-                                <button type="submit" class="btn btn-primary result-btn {% if match.result == 'blue' %}disabled{% endif %}">
-                                    {% if match.result == 'blue' %}
-                                    <i class="fas fa-trophy me-2"></i>Winner
-                                    {% else %}
-                                    Blue Win
+                            <div class="corner-box blue-corner athlete-corner">
+                                <div class="athlete-name">{{ match.blue_name }}</div>
+                                <div class="athlete-details">
+                                    {% if match.blue_age is defined %}
+                                    <div><i class="fas fa-birthday-cake"></i> {{ match.blue_age }} years</div>
                                     {% endif %}
-                                </button>
-                            </form>
+                                    {% if match.blue_belt is defined %}
+                                    <div><i class="fas fa-award"></i> {{ match.blue_belt }}</div>
+                                    {% endif %}
+                                    {% if match.blue_weight is defined %}
+                                    <div><i class="fas fa-weight"></i> {{ match.blue_weight }} kg</div>
+                                    {% endif %}
+                                    {% if match.blue_height is defined %}
+                                    <div><i class="fas fa-ruler-vertical"></i> {{ match.blue_height }} cm</div>
+                                    {% endif %}
+                                    {% if match.blue_dojang is defined %}
+                                    <div><i class="fas fa-home"></i> {{ match.blue_dojang }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                         <div class="col-2 d-flex align-items-center justify-content-center">
                             <div class="vs-text">VS</div>
                         </div>
                         <div class="col-5">
-                            <div class="corner-box red-corner">
-                                {{ match.red_name }}
-                            </div>
-                            <form action="{{ url_for('update_match_result', id=match.id) }}" method="POST">
-                                <input type="hidden" name="result" value="red">
-                                <button type="submit" class="btn btn-danger result-btn {% if match.result == 'red' %}disabled{% endif %}">
-                                    {% if match.result == 'red' %}
-                                    <i class="fas fa-trophy me-2"></i>Winner
-                                    {% else %}
-                                    Red Win
+                            <div class="corner-box red-corner athlete-corner">
+                                <div class="athlete-name">{{ match.red_name }}</div>
+                                <div class="athlete-details">
+                                    {% if match.red_age is defined %}
+                                    <div><i class="fas fa-birthday-cake"></i> {{ match.red_age }} years</div>
                                     {% endif %}
-                                </button>
-                            </form>
+                                    {% if match.red_belt is defined %}
+                                    <div><i class="fas fa-award"></i> {{ match.red_belt }}</div>
+                                    {% endif %}
+                                    {% if match.red_weight is defined %}
+                                    <div><i class="fas fa-weight"></i> {{ match.red_weight }} kg</div>
+                                    {% endif %}
+                                    {% if match.red_height is defined %}
+                                    <div><i class="fas fa-ruler-vertical"></i> {{ match.red_height }} cm</div>
+                                    {% endif %}
+                                    {% if match.red_dojang is defined %}
+                                    <div><i class="fas fa-home"></i> {{ match.red_dojang }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row match-actions">
+                        <div class="col-5">
+                            <button type="button" class="btn btn-primary result-btn w-100 update-result-btn" data-match-id="{{ match.id }}" data-result="blue" {% if match.result == 'blue' %}disabled{% endif %}>
+                                {% if match.result == 'blue' %}
+                                <i class="fas fa-trophy me-2"></i>Winner
+                                {% else %}
+                                Blue Win
+                                {% endif %}
+                            </button>
+                        </div>
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <button type="button" class="btn btn-secondary result-btn update-result-btn" data-match-id="{{ match.id }}" data-result="draw" {% if match.result == 'draw' %}disabled{% endif %}>
+                                Draw
+                            </button>
+                        </div>
+                        <div class="col-5">
+                            <button type="button" class="btn btn-danger result-btn w-100 update-result-btn" data-match-id="{{ match.id }}" data-result="red" {% if match.result == 'red' %}disabled{% endif %}>
+                                {% if match.result == 'red' %}
+                                <i class="fas fa-trophy me-2"></i>Winner
+                                {% else %}
+                                Red Win
+                                {% endif %}
+                            </button>
                         </div>
                     </div>
                     
@@ -152,10 +200,10 @@
 </div>
 
 <!-- Create Match Modal -->
-<div class="modal fade" id="createMatchModal" tabindex="-1" aria-labelledby="createMatchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal fade" id="createMatchModal" tabindex="-1" aria-labelledby="createMatchModalLabel" aria-hidden="true" style="z-index: 1080;">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 90%; margin: 30px auto;">
         <div class="modal-content bg-dark text-light">
-            <div class="modal-header border-0">
+            <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title" id="createMatchModalLabel">Create Match</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -167,7 +215,7 @@
                             <div class="mb-3">
                                 <label for="match-title" class="form-label">Title</label>
                                 <div class="input-group">
-                                    <select class="form-select bg-dark text-light border-secondary" id="match-title-select" name="title_id">
+                                    <select class="form-select bg-dark text-light border-secondary" id="match-title-select" name="title_id" placeholder="Select or create a title">
                                         <option value="">Select or create a title</option>
                                         <!-- Match titles will be loaded here -->
                                     </select>
@@ -188,7 +236,10 @@
                             <div class="row mb-4">
                                 <div class="col-md-5">
                                     <div id="blue-corner-card" class="corner-box blue-corner corner-card">
-                                        <h3>Blue Corner</h3>
+                                        <div class="corner-header">
+                                            <h3 class="m-0">Blue Corner</h3>
+                                            <button type="button" id="blue-corner-clear" class="btn-close btn-close-white corner-clear" style="display: none;"></button>
+                                        </div>
                                         <div class="athlete-corner-info" id="blue-corner-info"></div>
                                     </div>
                                     <input type="hidden" id="blue_corner_id" name="blue_corner_id" required>
@@ -200,7 +251,10 @@
                                 
                                 <div class="col-md-5">
                                     <div id="red-corner-card" class="corner-box red-corner corner-card">
-                                        <h3>Red Corner</h3>
+                                        <div class="corner-header">
+                                            <h3 class="m-0">Red Corner</h3>
+                                            <button type="button" id="red-corner-clear" class="btn-close btn-close-white corner-clear" style="display: none;"></button>
+                                        </div>
                                         <div class="athlete-corner-info" id="red-corner-info"></div>
                                     </div>
                                     <input type="hidden" id="red_corner_id" name="red_corner_id" required>
@@ -211,10 +265,10 @@
                             
                             <div class="mb-3">
                                 <label for="filter-gender" class="form-label">Gender</label>
-                                <div class="btn-group w-100" role="group" aria-label="Gender filter">
-                                    <button type="button" class="btn btn-outline-secondary modal-gender-filter active" data-gender="">All</button>
-                                    <button type="button" class="btn btn-outline-secondary modal-gender-filter" data-gender="male">Male</button>
-                                    <button type="button" class="btn btn-outline-secondary modal-gender-filter" data-gender="female">Female</button>
+                                <div class="btn-group w-100" role="group" aria-label="Gender filter" style="border-radius: 20px; overflow: hidden;">
+                                    <button type="button" class="btn btn-secondary modal-gender-filter active" data-gender="">All</button>
+                                    <button type="button" class="btn btn-secondary modal-gender-filter" data-gender="male">Male</button>
+                                    <button type="button" class="btn btn-secondary modal-gender-filter" data-gender="female">Female</button>
                                 </div>
                                 <input type="hidden" id="filter-gender-input" name="gender" value="">
                             </div>
@@ -230,15 +284,15 @@
                             </div>
                             
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="button" id="reset-filters" class="btn btn-outline-secondary">Reset</button>
-                                <button type="button" id="apply-search-filters" class="btn btn-primary">Apply filter</button>
+                                <button type="button" id="reset-filters" class="btn btn-outline-secondary rounded-pill px-4">Reset</button>
+                                <button type="button" id="apply-search-filters" class="btn btn-primary rounded-pill px-4">Apply filter</button>
                             </div>
                         </div>
                         
                         <!-- Right side - Athletes list -->
                         <div class="col-md-7 bg-dark p-0">
                             <div id="athlete-data-header" class="bg-secondary bg-opacity-25 p-3">
-                                <h5 id="athlete-data-title">Data Atlet</h5>
+                                <h5 id="athlete-data-title" class="m-0">Data Atlet</h5>
                             </div>
                             <div class="p-3" style="max-height: 500px; overflow-y: auto;">
                                 <div id="athletes-container" class="row g-3">
@@ -256,8 +310,8 @@
                 </form>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="createMatchForm" id="create-match-btn" class="btn btn-primary" disabled>Create Match</button>
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="createMatchForm" id="create-match-btn" class="btn btn-primary rounded-pill px-4" disabled>Create Match</button>
             </div>
         </div>
     </div>
@@ -305,6 +359,197 @@
                 this.closest('form').submit();
             });
         }
+        
+        // Update the JavaScript for handling match result updates
+        // Replace the existing updateResultButtons event listener code with this improved version
+
+        // Handle match result updates via AJAX
+        const updateResultButtons = document.querySelectorAll('.update-result-btn');
+        updateResultButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const matchId = this.dataset.matchId;
+                const result = this.dataset.result;
+                
+                // Disable all buttons during the update to prevent multiple clicks
+                const matchCard = this.closest('.match-card');
+                const allButtons = matchCard.querySelectorAll('.update-result-btn');
+                allButtons.forEach(btn => btn.disabled = true);
+                
+                // Show loading indicator
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('result', result);
+                
+                // Add the X-Requested-With header to identify as AJAX request
+                const fetchOptions = {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                };
+                
+                // Send AJAX request
+                fetch(`/matches/update_result/${matchId}`, fetchOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Update UI to reflect the new result
+                            updateMatchUI(matchId, result);
+                        } else {
+                            // Re-enable buttons and show error
+                            allButtons.forEach(btn => btn.disabled = false);
+                            resetButtonText(allButtons, result);
+                            alert('Error updating match result: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Re-enable buttons and show error
+                        allButtons.forEach(btn => btn.disabled = false);
+                        resetButtonText(allButtons, result);
+                        alert('An error occurred while updating the match result. Please try again.');
+                    });
+            });
+        });
+
+        // Helper function to reset button text after error
+        function resetButtonText(buttons, clickedResult) {
+            buttons.forEach(btn => {
+                const result = btn.dataset.result;
+                if (result === 'blue') {
+                    btn.innerHTML = btn.disabled ? '<i class="fas fa-trophy me-2"></i>Winner' : 'Blue Win';
+                } else if (result === 'red') {
+                    btn.innerHTML = btn.disabled ? '<i class="fas fa-trophy me-2"></i>Winner' : 'Red Win';
+                } else {
+                    btn.innerHTML = 'Draw';
+                }
+            });
+        }
+
+        // Function to update match UI after result change
+        function updateMatchUI(matchId, result) {
+            // Find the match card by data attribute
+            const matchCards = document.querySelectorAll('.match-card');
+            let matchCard = null;
+            
+            matchCards.forEach(card => {
+                const buttons = card.querySelectorAll('.update-result-btn');
+                buttons.forEach(btn => {
+                    if (btn.dataset.matchId === matchId) {
+                        matchCard = card;
+                    }
+                });
+            });
+            
+            if (!matchCard) return;
+            
+            // Update result badge
+            const resultBadge = matchCard.querySelector('.badge:first-child');
+            if (resultBadge) {
+                resultBadge.className = 'badge';
+                if (result === 'draw') {
+                    resultBadge.classList.add('bg-secondary');
+                    resultBadge.textContent = 'Draw';
+                } else if (result === 'blue') {
+                    resultBadge.classList.add('bg-primary');
+                    resultBadge.textContent = 'Blue Corner Won';
+                } else {
+                    resultBadge.classList.add('bg-danger');
+                    resultBadge.textContent = 'Red Corner Won';
+                }
+            }
+            
+            // Update buttons
+            const blueButton = matchCard.querySelector('.update-result-btn[data-result="blue"]');
+            const drawButton = matchCard.querySelector('.update-result-btn[data-result="draw"]');
+            const redButton = matchCard.querySelector('.update-result-btn[data-result="red"]');
+            
+            if (blueButton) {
+                blueButton.disabled = (result === 'blue');
+                blueButton.innerHTML = result === 'blue' ? '<i class="fas fa-trophy me-2"></i>Winner' : 'Blue Win';
+            }
+            
+            if (drawButton) {
+                drawButton.disabled = (result === 'draw');
+                drawButton.innerHTML = 'Draw';
+            }
+            
+            if (redButton) {
+                redButton.disabled = (result === 'red');
+                redButton.innerHTML = result === 'red' ? '<i class="fas fa-trophy me-2"></i>Winner' : 'Red Win';
+            }
+        }
+        
+        // Add this after the updateResultButtons event listener code
+        // Handle reset result button clicks
+        const resetResultButtons = document.querySelectorAll('.reset-result-btn');
+        resetResultButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const matchId = this.dataset.matchId;
+                
+                // Find the match card
+                const matchCard = this.closest('.match-card');
+                
+                // Disable all buttons during the update to prevent multiple clicks
+                const allButtons = matchCard.querySelectorAll('.update-result-btn, .reset-result-btn');
+                allButtons.forEach(btn => btn.disabled = true);
+                
+                // Show loading indicator on the reset button
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Resetting...';
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('result', 'draw');
+                
+                // Add the X-Requested-With header to identify as AJAX request
+                const fetchOptions = {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                };
+                
+                // Send AJAX request to update the result to draw (reset)
+                fetch(`/matches/update_result/${matchId}`, fetchOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Update UI to reflect the reset result (draw)
+                            updateMatchUI(matchId, 'draw');
+                            
+                            // Reset the button text
+                            this.innerHTML = '<i class="fas fa-undo me-2"></i>Reset Result';
+                            this.disabled = false;
+                        } else {
+                            // Re-enable buttons and show error
+                            allButtons.forEach(btn => btn.disabled = false);
+                            this.innerHTML = '<i class="fas fa-undo me-2"></i>Reset Result';
+                            alert('Error resetting match result: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Re-enable buttons and show error
+                        allButtons.forEach(btn => btn.disabled = false);
+                        this.innerHTML = '<i class="fas fa-undo me-2"></i>Reset Result';
+                        alert('An error occurred while resetting the match result. Please try again.');
+                    });
+            });
+        });
         
         // ----------------- Create Match Modal -----------------
         let allAthletes = [];
@@ -366,6 +611,12 @@
             // Disable create match button
             const createMatchBtn = document.getElementById('create-match-btn');
             if (createMatchBtn) createMatchBtn.disabled = true;
+
+            // Hide clear buttons
+            const blueCornerClear = document.getElementById('blue-corner-clear');
+            const redCornerClear = document.getElementById('red-corner-clear');
+            if (blueCornerClear) blueCornerClear.style.display = 'none';
+            if (redCornerClear) redCornerClear.style.display = 'none';
         }
         
         // Fetch all athletes from the API
@@ -428,23 +679,28 @@
             // Create and append athlete cards
             athletes.forEach(athlete => {
                 const card = document.createElement('div');
-                card.className = 'col-md-6 col-lg-4';
+                card.className = 'col-md-6 col-lg-4 mb-3';
+                
+                // Determine card color based on gender
+                const cardClass = athlete.gender === 'male' ? 'male' : 'female';
+                
                 card.innerHTML = `
-                    <div class="athlete-card" data-id="${athlete.id}">
+                    <div class="athlete-card ${cardClass}" data-id="${athlete.id}">
                         <h6 class="mb-2">${athlete.name}</h6>
                         <div class="athlete-details small">
-                            <div><strong>Age:</strong> ${athlete.age} years</div>
-                            <div><strong>Belt:</strong> ${athlete.belt}</div>
-                            <div><strong>Weight:</strong> ${athlete.weight} kg</div>
-                            <div><strong>Height:</strong> ${athlete.height} cm</div>
-                            <div><strong>Dojang:</strong> ${athlete.dojang}</div>
+                            <div><i class="fas fa-birthday-cake me-2"></i> ${athlete.age} years</div>
+                            <div><i class="fas fa-award me-2"></i> ${athlete.belt}</div>
+                            <div><i class="fas fa-weight me-2"></i> ${athlete.weight} kg</div>
+                            <div><i class="fas fa-ruler-vertical me-2"></i> ${athlete.height} cm</div>
+                            <div><i class="fas fa-home me-2"></i> ${athlete.dojang}</div>
                         </div>
                     </div>
                 `;
                 athletesContainer.appendChild(card);
                 
                 // Add click event
-                card.querySelector('.athlete-card').addEventListener('click', function() {
+                const athleteCard = card.querySelector('.athlete-card');
+                athleteCard.addEventListener('click', function() {
                     selectAthlete(athlete);
                 });
             });
@@ -652,14 +908,16 @@
                 cornerToUse = 'red';
             }
             
-            // Create athlete info HTML
+            // Create athlete info HTML with icons
             const athleteDetails = `
-                <div class="athlete-corner-name">${athlete.name}</div>
-                <div class="athlete-corner-info-item"><strong>Age:</strong> ${athlete.age} years</div>
-                <div class="athlete-corner-info-item"><strong>Belt:</strong> ${athlete.belt}</div>
-                <div class="athlete-corner-info-item"><strong>Weight:</strong> ${athlete.weight} kg</div>
-                <div class="athlete-corner-info-item"><strong>Height:</strong> ${athlete.height} cm</div>
-                <div class="athlete-corner-info-item"><strong>Dojang:</strong> ${athlete.dojang}</div>
+                <div class="athlete-name">${athlete.name}</div>
+                <div class="athlete-stats">
+                    <div class="stat-item"><i class="fas fa-birthday-cake"></i> <span>${athlete.age} years</span></div>
+                    <div class="stat-item"><i class="fas fa-award"></i> <span>${athlete.belt}</span></div>
+                    <div class="stat-item"><i class="fas fa-weight"></i> <span>${athlete.weight} kg</span></div>
+                    <div class="stat-item"><i class="fas fa-ruler-vertical"></i> <span>${athlete.height} cm</span></div>
+                    <div class="stat-item"><i class="fas fa-home"></i> <span>${athlete.dojang}</span></div>
+                </div>
             `;
             
             if (cornerToUse === 'blue') {
@@ -677,6 +935,25 @@
                 if (blueCornerCard) {
                     blueCornerCard.querySelector('h3').textContent = athlete.name;
                 }
+
+                // Show the clear button
+                const blueCornerClear = document.getElementById('blue-corner-clear');
+                if (blueCornerClear) blueCornerClear.style.display = 'block';
+                
+                // Automatically filter to show only athletes of the same gender
+                filterGenderInput.value = athlete.gender;
+                
+                // Update gender filter buttons
+                modalGenderFilters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.gender === athlete.gender) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Update athlete data header and apply filters
+                updateAthleteDataHeader();
+                applyFilters();
             } else {
                 selectedRedCorner = athlete;
                 
@@ -692,30 +969,29 @@
                 if (redCornerCard) {
                     redCornerCard.querySelector('h3').textContent = athlete.name;
                 }
+
+                // Show the clear button
+                const redCornerClear = document.getElementById('red-corner-clear');
+                if (redCornerClear) redCornerClear.style.display = 'block';
+                
+                // Automatically filter to show only athletes of the same gender
+                filterGenderInput.value = athlete.gender;
+                
+                // Update gender filter buttons
+                modalGenderFilters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.gender === athlete.gender) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Update athlete data header and apply filters
+                updateAthleteDataHeader();
+                applyFilters();
             }
             
-            // If both corners have athletes of the same gender, update gender filter
+            // Enable create match button if both corners have athletes
             if (selectedBlueCorner && selectedRedCorner) {
-                if (selectedBlueCorner.gender === selectedRedCorner.gender) {
-                    // Update gender filter buttons
-                    modalGenderFilters.forEach(btn => {
-                        btn.classList.remove('active');
-                        if (btn.dataset.gender === selectedBlueCorner.gender) {
-                            btn.classList.add('active');
-                        }
-                    });
-                    
-                    // Update hidden input
-                    filterGenderInput.value = selectedBlueCorner.gender;
-                    
-                    // Update athlete data header
-                    updateAthleteDataHeader();
-                    
-                    // Apply filters to show only athletes of matching gender
-                    applyFilters();
-                }
-                
-                // Enable create match button
                 const createMatchBtn = document.getElementById('create-match-btn');
                 if (createMatchBtn) createMatchBtn.disabled = false;
             }
@@ -724,37 +1000,103 @@
         // Set up corner card click handlers
         const blueCornerCard = document.getElementById('blue-corner-card');
         const redCornerCard = document.getElementById('red-corner-card');
-        
+        const blueCornerClear = document.getElementById('blue-corner-clear');
+        const redCornerClear = document.getElementById('red-corner-clear');
+
         if (blueCornerCard) {
-            blueCornerCard.addEventListener('click', function() {
-                if (selectedBlueCorner) {
-                    // If there's already an athlete in the blue corner, remove them
-                    selectedBlueCorner = null;
-                    this.querySelector('h3').textContent = 'Blue Corner';
-                    document.getElementById('blue-corner-info').innerHTML = '';
-                    document.getElementById('blue_corner_id').value = '';
-                    
-                    // Disable create match button if needed
-                    const createMatchBtn = document.getElementById('create-match-btn');
-                    if (createMatchBtn) createMatchBtn.disabled = !(selectedBlueCorner && selectedRedCorner);
-                }
+            blueCornerCard.addEventListener('click', function(e) {
+                // Don't trigger if the clear button was clicked
+                if (e.target.closest('.corner-clear')) return;
+                
+                // If no athlete is selected, do nothing (will be handled by athlete selection)
+                if (!selectedBlueCorner) return;
             });
         }
-        
+
         if (redCornerCard) {
-            redCornerCard.addEventListener('click', function() {
-                if (selectedRedCorner) {
-                    // If there's already an athlete in the red corner, remove them
-                    selectedRedCorner = null;
-                    this.querySelector('h3').textContent = 'Red Corner';
-                    document.getElementById('red-corner-info').innerHTML = '';
-                    document.getElementById('red_corner_id').value = '';
-                    
-                    // Disable create match button if needed
-                    const createMatchBtn = document.getElementById('create-match-btn');
-                    if (createMatchBtn) createMatchBtn.disabled = !(selectedBlueCorner && selectedRedCorner);
-                }
+            redCornerCard.addEventListener('click', function(e) {
+                // Don't trigger if the clear button was clicked
+                if (e.target.closest('.corner-clear')) return;
+                
+                // If no athlete is selected, do nothing (will be handled by athlete selection)
+                if (!selectedRedCorner) return;
             });
+        }
+
+        // Set up clear buttons
+        if (blueCornerClear) {
+            blueCornerClear.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event bubbling
+                clearBlueCorner();
+            });
+        }
+
+        if (redCornerClear) {
+            redCornerClear.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event bubbling
+                clearRedCorner();
+            });
+        }
+
+        // Functions to clear corners
+        function clearBlueCorner() {
+            selectedBlueCorner = null;
+            const blueCornerCard = document.getElementById('blue-corner-card');
+            if (blueCornerCard) {
+                blueCornerCard.querySelector('h3').textContent = 'Blue Corner';
+            }
+            document.getElementById('blue-corner-info').innerHTML = '';
+            document.getElementById('blue_corner_id').value = '';
+            document.getElementById('blue-corner-clear').style.display = 'none';
+            
+            // Disable create match button if needed
+            const createMatchBtn = document.getElementById('create-match-btn');
+            if (createMatchBtn) createMatchBtn.disabled = !(selectedBlueCorner && selectedRedCorner);
+            
+            // If red corner still has an athlete, keep the gender filter
+            // Otherwise, reset the gender filter
+            if (!selectedRedCorner) {
+                // Reset gender filter
+                modalGenderFilters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.gender === '') {
+                        btn.classList.add('active');
+                    }
+                });
+                filterGenderInput.value = '';
+                updateAthleteDataHeader();
+                applyFilters();
+            }
+        }
+
+        function clearRedCorner() {
+            selectedRedCorner = null;
+            const redCornerCard = document.getElementById('red-corner-card');
+            if (redCornerCard) {
+                redCornerCard.querySelector('h3').textContent = 'Red Corner';
+            }
+            document.getElementById('red-corner-info').innerHTML = '';
+            document.getElementById('red_corner_id').value = '';
+            document.getElementById('red-corner-clear').style.display = 'none';
+            
+            // Disable create match button if needed
+            const createMatchBtn = document.getElementById('create-match-btn');
+            if (createMatchBtn) createMatchBtn.disabled = !(selectedBlueCorner && selectedRedCorner);
+            
+            // If blue corner still has an athlete, keep the gender filter
+            // Otherwise, reset the gender filter
+            if (!selectedBlueCorner) {
+                // Reset gender filter
+                modalGenderFilters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.gender === '') {
+                        btn.classList.add('active');
+                    }
+                });
+                filterGenderInput.value = '';
+                updateAthleteDataHeader();
+                applyFilters();
+            }
         }
     });
 </script>
@@ -770,19 +1112,46 @@
         padding: 0;
     }
     
-    /* Corner cards */
+    /* Corner cards improved styling */
     .corner-card {
         cursor: pointer;
         transition: all 0.3s ease;
-        min-height: 120px;
+        min-height: 80px;
+        max-height: 180px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
+        justify-content: flex-start;
+        align-items: stretch;
+        text-align: left;
         border-radius: 8px;
-        padding: 15px;
+        padding: 10px;
         margin-top: 15px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .corner-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+        width: 100%;
+        position: relative;
+    }
+
+    .corner-clear {
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+        font-size: 0.8rem;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10;
+    }
+
+    .corner-clear:hover {
+        opacity: 1;
     }
     
     .blue-corner {
@@ -797,26 +1166,41 @@
         box-shadow: 0 0 15px rgba(220, 53, 69, 0.3);
     }
     
-    .corner-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-    }
-    
     .athlete-corner-info {
-        margin-top: 10px;
-        text-align: left;
         width: 100%;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     
-    .athlete-corner-name {
+    .athlete-name {
         font-weight: bold;
-        font-size: 1.1em;
-        margin-bottom: 5px;
+        font-size: 0.9em;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    .athlete-corner-info-item {
-        margin-bottom: 3px;
+    .athlete-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+        font-size: 0.75rem;
+    }
+    
+    .stat-item {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .stat-item i {
+        margin-right: 4px;
+        width: 12px;
+        text-align: center;
     }
     
     .vs-text {
@@ -828,19 +1212,272 @@
     
     /* Athlete cards */
     .athlete-card {
-        background-color: #2a7db8;
-        color: white;
         border-radius: 8px;
         padding: 12px;
         height: 100%;
         cursor: pointer;
         transition: all 0.3s ease;
+        color: white;
+    }
+
+    .athlete-card.male {
+        background-color: #2a7db8;
         box-shadow: 0 0 10px rgba(42, 125, 184, 0.3);
     }
-    
-    .athlete-card:hover {
+
+    .athlete-card.female {
+        background-color: #d63384;
+        box-shadow: 0 0 10px rgba(214, 51, 132, 0.3);
+    }
+
+    .athlete-card.male:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(42, 125, 184, 0.5);
     }
+
+    .athlete-card.female:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(214, 51, 132, 0.5);
+    }
+
+    /* Fix modal positioning and z-index */
+    .modal {
+        z-index: 1080 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1070 !important;
+        opacity: 0.8 !important;
+    }
+
+    body.modal-open {
+        overflow: hidden;
+        padding-right: 0 !important;
+    }
+
+    /* Ensure the modal doesn't get cut off at the bottom */
+    .modal-dialog {
+        margin: 30px auto;
+        max-height: calc(100vh - 60px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-content {
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+
+    /* Additional modal styling to match reference image */
+    #createMatchModal .modal-content {
+        border: none;
+        border-radius: 12px;
+    }
+
+    #createMatchModal .corner-card {
+        border-radius: 8px;
+    }
+
+    #createMatchModal .blue-corner {
+        background-color: #0d6efd;
+    }
+
+    #createMatchModal .red-corner {
+        background-color: #dc3545;
+    }
+
+    #createMatchModal .btn-group .btn {
+        border: none;
+    }
+
+    #createMatchModal .btn-group .btn.active {
+        background-color: #444;
+    }
+
+    /* Ensure athlete cards have consistent height */
+    .athlete-card {
+        min-height: 160px;
+        margin-bottom: 15px;
+    }
+
+    /* Make the modal scrollable if needed */
+    .modal-body {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    /* Ensure the athlete container scrolls independently */
+    #createMatchModal .athlete-container-wrapper {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    /* Match card styling */
+    .match-card {
+        background-color: #2b2b2b;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    /* Match actions row */
+    .match-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .result-btn {
+        border-radius: 30px;
+        font-weight: 500;
+        padding: 8px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .result-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .result-btn:disabled {
+        opacity: 0.8;
+        cursor: default;
+    }
+    
+    /* Athlete corner styling in match cards */
+    .athlete-corner {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .athlete-corner .athlete-name {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    
+    .athlete-corner .athlete-details {
+        font-size: 0.75rem;
+    }
+    
+    .athlete-corner .athlete-details div {
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .athlete-corner .athlete-details i {
+        width: 16px;
+        margin-right: 5px;
+        text-align: center;
+    }
+
+    /* Add to the style section */
+    .dropdown {
+        position: static;
+    }
+
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+        position: absolute;
+        z-index: 1060;
+    }
+
+    /* Ensure match cards have proper spacing */
+    .col-md-6.mb-4 {
+        padding: 0 15px;
+    }
+
+    /* Improve the draw button styling */
+    .match-actions .col-2 button {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+/* Update the dropdown menu styling to ensure it's not cut off by other cards */
+.dropdown {
+    position: static;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: auto;
+    z-index: 1080; /* Increased z-index to ensure it appears above other elements */
+    transform: none;
+    top: 100%;
+    margin-top: 0.125rem;
+    min-width: 10rem;
+}
+
+/* Add to the style section */
+.match-card {
+    margin-bottom: 30px; /* Increase bottom margin to prevent overlap */
+    position: relative;
+}
+
+.row > .col-md-6 {
+    padding-bottom: 15px; /* Add padding to columns */
+}
+
+/* Ensure the dropdown menu container has proper positioning */
+.dropdown {
+    position: static;
+}
+
+/* Position the dropdown menu properly */
+.dropdown-menu {
+    position: absolute;
+    right: 20px;
+    left: auto;
+    top: auto;
+    transform: none;
+    float: none;
+    margin-top: 0;
+    z-index: 2000; /* Very high z-index to ensure it's on top */
+}
+
+/* Make sure the dropdown toggle button is visible */
+.dropdown .btn {
+    z-index: 1090;
+    position: relative;
+}
+
+/* Ensure the dropdown menu has proper styling */
+.dropdown-menu {
+    background-color: #343a40;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+}
+
+.dropdown-item {
+    color: #fff;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: #495057;
+}
+
+/* Ensure the dropdown toggle button has proper z-index */
+.dropdown .btn {
+    position: relative;
+    z-index: 1070;
+}
 </style>
 {% endblock %}
